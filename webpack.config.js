@@ -1,25 +1,25 @@
-'use strict';
+'use strict'
 
-const path = require('path');
-const webpack = require('webpack');
-const autoprefixer = require('autoprefixer');
-const precss = require('precss');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+const path = require('path')
+const webpack = require('webpack')
+const autoprefixer = require('autoprefixer')
+const precss = require('precss')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
 
-let appEntry;
-let devtool;
-let plugins;
+let appEntry
+let devtool
+let plugins
 
 const htmlTemplate = new HtmlWebpackPlugin({
-  title: 'Relay Starter Kit - Integrated with Relay, GraphQL, Express, ES6/ES7, JSX, Webpack, Babel, Material Design Lite, and PostCSS',
+  title: 'Relaid - Integrated with Relay, GraphQL, Express, ES6/ES7, JSX, Webpack, Babel, Material Design Lite, and PostCSS',
   template: './client/index.html',
   mobile: true,
   inject: false
-});
+})
 
-if (['production', 'staging'].include(process.env.NODE_ENV)) {
-  appEntry = [path.join(__dirname, 'client/index.js')];
-  devtool = 'source-map';
+if (process.env.NODE_ENV === 'production') {
+  appEntry = [path.join(__dirname, 'client/index.js')]
+  devtool = 'source-map'
   plugins = [
     new webpack.optimize.OccurrenceOrderPlugin(),
     new webpack.optimize.CommonsChunkPlugin({name: 'vendor', filename: 'vendor.js'}),
@@ -35,7 +35,7 @@ if (['production', 'staging'].include(process.env.NODE_ENV)) {
       }
     }),
     htmlTemplate
-  ];
+  ]
 } else {
   appEntry = [
     // activate HMR for React
@@ -43,8 +43,8 @@ if (['production', 'staging'].include(process.env.NODE_ENV)) {
     path.join(__dirname, 'client/index.js'),
     'webpack-dev-server/client?http://localhost:3000',
     'webpack/hot/only-dev-server'
-  ];
-  devtool = 'eval';
+  ]
+  devtool = 'eval'
   plugins = [
     new webpack.optimize.CommonsChunkPlugin({name: 'vendor', filename: 'vendor.js'}),
     new webpack.NoEmitOnErrorsPlugin(),
@@ -54,7 +54,7 @@ if (['production', 'staging'].include(process.env.NODE_ENV)) {
       __DEV__: true
     }),
     htmlTemplate
-  ];
+  ]
 }
 
 module.exports = {
@@ -129,4 +129,4 @@ module.exports = {
     }]
   },
   plugins
-};
+}
