@@ -37,10 +37,10 @@ describe('GraphQL', () => {
             email
             role
             website
-            stories {
+            posts {
               edges {
                 node {
-                  url
+                  title
                 }
               }
             }
@@ -58,21 +58,21 @@ describe('GraphQL', () => {
       expect(data.viewer.email).toBe(user.email)
       expect(data.viewer.role).toBe(user.role)
       expect(data.viewer.website).toBe(user.website)
-      expect(data.viewer.stories.edges.length).toBe(4)
+      expect(data.viewer.posts.edges.length).toBe(4)
     })
   })
 
-  describe('StoryType', () => {
+  describe('PostType', () => {
     const user = Database.getUser('1')
 
-    it('returns the correct story associated with a user ', async () => {
-      const storyId = toGlobalId('Story', '1')
+    it('returns the correct post associated with a user ', async () => {
+      const postId = toGlobalId('Post', '1')
 
-      const variables = { storyId }
+      const variables = { postId }
       const query = `
-        query($storyId: String!) {
+        query($postId: String!) {
           viewer {
-            story(id: $storyId) {
+            post(id: $postId) {
               id
             }
           }
@@ -85,7 +85,7 @@ describe('GraphQL', () => {
       const result = await graphql(schema, query, rootValue, context, variables)
       const { data } = result
 
-      expect(data.viewer.story.id).toBe(storyId)
+      expect(data.viewer.post.id).toBe(postId)
     })
   })
 })
