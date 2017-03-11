@@ -1,0 +1,52 @@
+/* ==========================================================================
+   COLOR
+   ========================================================================== */
+$white: #FFFFFF;
+$black: #333333;
+$gray: #E3E3E3;
+$blue: #00BCD4;
+$black-light: #2B2D2E;
+$light-gray: #e8e8e8;
+
+.formLabel {
+	width: auto;
+	height: auto;
+	min-width: 3px;
+	min-height: 10px;
+	display: -webkit-box;
+	display: -moz-box;
+	display: -ms-flexbox;
+	display: -webkit-flex;
+	display: flex;
+	-webkit-box-direction: normal;
+	-moz-box-direction: normal;
+	-webkit-box-orient: horizontal;
+	-moz-box-orient: horizontal;
+	-webkit-flex-direction: row;
+	-ms-flex-direction: row;
+	flex-direction: row;
+	-webkit-flex-wrap: nowrap;
+	-ms-flex-wrap: nowrap;
+	flex-wrap: nowrap;
+	-webkit-box-align: start;
+	-moz-box-align: start;
+	-webkit-align-items: flex-start;
+	-ms-flex-align: start;
+	align-items: flex-start;
+	-webkit-box-pack: start;
+	-moz-box-pack: start;
+	-webkit-justify-content: flex-start;
+	-ms-flex-pack: start;
+	justify-content: flex-start;
+	overflow: visible;
+	margin: 0 10px 0 0;
+	white-space:nowrap;
+	color: $black;
+	font-family: "Lucida Grande";
+	font-size: 14px;
+	font-weight: bold;
+	font-style: normal;
+	text-align: left;
+	visibility:visible;
+}
+

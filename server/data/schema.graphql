@@ -1,0 +1,196 @@
+# A headline option for a story.
+type Headline implements Node {
+  # The ID of an object
+  id: ID!
+
+  # The headline's text.
+  text: String
+
+  # Current rank of story in voting
+  rank: Int
+
+  # The id of the parent story
+  storyId: String
+
+  # The id of the user who created this headline
+  userId: String
+
+  # Disabled flag.
+  disabled: Boolean
+}
+
+# A connection to a list of items.
+type HeadlineConnection {
+  # Information to aid in pagination.
+  pageInfo: PageInfo!
+
+  # A list of edges.
+  edges: [HeadlineEdge]
+}
+
+# An edge in a connection.
+type HeadlineEdge {
+  # The item at the end of the edge
+  node: Headline
+
+  # A cursor for use in pagination
+  cursor: String!
+}
+
+input HeadlineInput {
+  id: String!
+  text: String
+  rank: Int
+  storyId: String
+  userId: String
+  disabled: Boolean
+}
+
+input InsertHeadlineInput {
+  storyId: String!
+  headline: HeadlineInput!
+  clientMutationId: String
+}
+
+type InsertHeadlinePayload {
+  headline: Headline
+  clientMutationId: String
+}
+
+input LoginInput {
+  email: String!
+  password: String!
+  clientMutationId: String
+}
+
+type LoginPayload {
+  viewer: User
+  clientMutationId: String
+}
+
+input LogoutInput {
+  id: String!
+  clientMutationId: String
+}
+
+type LogoutPayload {
+  viewer: User
+  clientMutationId: String
+}
+
+type Mutation {
+  updateHeadlines(input: UpdateHeadlinesInput!): UpdateHeadlinesPayload
+  insertHeadline(input: InsertHeadlineInput!): InsertHeadlinePayload
+  login(input: LoginInput!): LoginPayload
+  logout(input: LogoutInput!): LogoutPayload
+}
+
+# An object with an ID
+interface Node {
+  # The id of the object.
+  id: ID!
+}
+
+# Information about pagination in a connection.
+type PageInfo {
+  # When paginating forwards, are there more items?
+  hasNextPage: Boolean!
+
+  # When paginating backwards, are there more items?
+  hasPreviousPage: Boolean!
+
+  # When paginating backwards, the cursor to continue.
+  startCursor: String
+
+  # When paginating forwards, the cursor to continue.
+  endCursor: String
+}
+
+type Query {
+  # Fetches an object given its ID
+  node(
+    # The ID of an object
+    id: ID!
+  ): Node
+  viewer: User
+}
+
+# A story that is having its headlines voted on.
+type Story implements Node {
+  # The ID of an object
+  id: ID!
+
+  # All the headline options
+  headlines(after: String, first: Int, before: String, last: Int): HeadlineConnection
+
+  # Url of the story
+  url: String
+
+  # The SEO focus keyword
+  focusKeyword: String
+
+  # True of the story is archived, false if it's live
+  archived: Boolean
+
+  # True of the story is started, false if it's stopped
+  started: Boolean
+
+  # ID of the story's user
+  userId: String
+}
+
+# A connection to a list of items.
+type StoryConnection {
+  # Information to aid in pagination.
+  pageInfo: PageInfo!
+
+  # A list of edges.
+  edges: [StoryEdge]
+}
+
+# An edge in a connection.
+type StoryEdge {
+  # The item at the end of the edge
+  node: Story
+
+  # A cursor for use in pagination
+  cursor: String!
+}
+
+input UpdateHeadlinesInput {
+  storyId: String!
+  headlines: [HeadlineInput]!
+  clientMutationId: String
+}
+
+type UpdateHeadlinesPayload {
+  story: Story
+  clientMutationId: String
+}
+
+# A person who uses our app
+type User implements Node {
+  # The ID of an object
+  id: ID!
+
+  # A story of mine.
+  story(id: String!): Story
+
+  # Unarchived stories that I have
+  stories(after: String, first: Int, before: String, last: Int): StoryConnection
+
+  # Archived stories that I have
+  archivedStories(after: String, first: Int, before: String, last: Int): StoryConnection
+
+  # Users's email
+  email: String
+
+  # Users's name
+  name: String
+
+  # Users's role
+  role: String
+
+  # User's website
+  website: String
+}
