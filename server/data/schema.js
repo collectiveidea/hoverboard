@@ -15,8 +15,7 @@ import Database from './database'
 
 import {
   userType,
-  storyType,
-  headlineType,
+  postType,
   nodeField
 } from './modelTypes'
 

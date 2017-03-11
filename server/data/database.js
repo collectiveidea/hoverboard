@@ -1,31 +1,23 @@
 import Logger from '../utils/logger'
 
 import {
-  Headline
+  User,
+  Post
 } from './models'
 
 import {
   usersList,
-  headlinesList,
-  storiesList,
-  headlineRanksList
+  postsList
 } from './seeds'
 
 class Database {
-  constructor(users, headlines, stories, headlineRanks) {
+  constructor({ users, posts }) {
     this.usersList = users
-    this.headlinesList = headlines
-    this.storiesList = stories
-    this.headlineRanksList = headlineRanks
+    this.postsList = posts
 
     this.getUser = this.getUser.bind(this)
-    this.getStory = this.getStory.bind(this)
-    this.getHeadline = this.getHeadline.bind(this)
-    this.getStories = this.getStories.bind(this)
-    this.updateHeadline = this.updateHeadline.bind(this)
-    this.updateHeadlines = this.updateHeadlines.bind(this)
-    this.insertHeadline = this.insertHeadline.bind(this)
-    this.updateHeadlineRank = this.updateHeadlineRank.bind(this)
+    this.getPost = this.getPost.bind(this)
+    this.getPosts = this.getPosts.bind(this)
 
     this.viewer = null
     this.withViewer = this.withViewer.bind(this)
@@ -35,9 +27,7 @@ class Database {
 
   reset() {
     this.usersList = usersList()
-    this.headlinesList = headlinesList()
-    this.storiesList = storiesList()
-    this.headlineRanksList = headlineRanksList()
+    this.postsList = postsList()
   }
 
   // Queries
@@ -56,97 +46,31 @@ class Database {
     return user
   }
 
-  getStory(id) {
-    const story = this.storiesList.find(s => s.id === id)
-    Logger.log('Database.getStory', id, story)
-    return story
+  getPost(id) {
+    const post = this.postsList.find(s => s.id === id)
+    Logger.log('Database.getPost', id, post)
+    return post
   }
 
-  getHeadline(id) {
-    const headline = this.headlinesList.find(h => h.id === id)
-    Logger.log('Database.getHeadline', id, headline)
-    return headline
-  }
-
-  getStories(args, filterFunction) {
-    const userStories = this.storiesList.filter(s => (s.userId === this.viewer.id))
-    const stories = this.getFromList(userStories, args, filterFunction)
-    Logger.log('Database.getStories', args, stories)
-    return stories
-  }
-
-  getHeadlines(args, story) {
-    let headlines = this.headlinesList.filter(
-      h => h.storyId === story.id
-    ).sort((a, b) => this.getHeadlineRank(a.id).rank > this.getHeadlineRank(b.id).rank)
-
-    headlines = this.getFromList(headlines, args)
-
-    Logger.log('Database.getHeadlines', { args, story }, headlines)
-    return headlines
+  getPosts(args, filterFunction) {
+    const userPosts = this.postsList.filter(s => (s.userId === this.viewer.id))
+    const posts = this.getFromList(userPosts, args, filterFunction)
+    Logger.log('Database.getPosts', args, posts)
+    return posts
   }
 
   // Mutations
-  updateHeadline(headlineId, newAttrs, rank) {
-    const headline = this.getHeadline(headlineId)
-
-    // Update any attr keys, but skip local id, mutation id, and rank.
-    Object.keys(newAttrs).forEach((key) => {
-      if ((key !== 'id') && (key !== 'clientMutationId') && (key !== 'rank')) {
-        headline[key] = newAttrs[key]
-      }
-    })
-
-    // If rank needs updating, update the rank object.
-    if (!(rank === undefined)) {
-      this.updateHeadlineRank(headline.id, rank)
-    }
-
-    Logger.log('Database.updateHeadline', { headlineId, newAttrs, rank }, headline)
-    return headline
+  updatePost(postId, newAttrs, rank) {
+    return postId
   }
 
-  updateHeadlines(headlines) {
-    // loop through headlines and update them.
-    headlines.forEach((newHeadlineAttrs, index) => {
-      this.updateHeadline(newHeadlineAttrs.id, newHeadlineAttrs, index)
-    })
-    Logger.log('Database.updateHeadlines', {}, headlines)
-    return headlines
+  insertHeadline(postAttrs) {
+    return postAttrs
   }
-
-  insertHeadline(headlineAttrs) {
-    const headline = new Headline({
-      id: headlineAttrs.id,
-      text: headlineAttrs.text,
-      storyId: headlineAttrs.storyId,
-      userId: this.viewer.id,
-      disabled: headlineAttrs.disabled
-    })
-    // Create headlineRank object
-    return this.headlinesList.push(headline)
-  }
-
-  // private
 
   withViewer(newViewer) {
     this.viewer = newViewer
     return this
-  }
-
-  updateHeadlineRank(headlineId, newRank) {
-    const headlineRank = this.getHeadlineRank(headlineId)
-    headlineRank.rank = newRank
-    Logger.log('updateHeadlineRank', { headlineId, newRank })
-    return headlineRank
-  }
-
-  getHeadlineRank(headlineId) {
-    const headlineRank = this.headlineRanksList.find(
-      hr => (hr.headlineId === headlineId) && (hr.userId === this.viewer.id)
-    )
-    Logger.log('getHeadlineRank', headlineId, headlineRank)
-    return headlineRank
   }
 
   getFromList(list, { first, after, last, before, limit }, filterFunction = () => true) {
@@ -163,4 +87,4 @@ class Database {
   }
 }
 
-export default new Database(usersList(), headlinesList(), storiesList(), headlineRanksList())
+export default new Database({ users: usersList(), posts: postsList() })
