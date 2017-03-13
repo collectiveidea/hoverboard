@@ -14,7 +14,7 @@
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
     "node-testdebug": "node debug --harmony ./node_modules/jest-cli/bin/jest.js --runInBand",
-    "devtool-testdebug": "./node_modules/devtool/bin/index.js ./node_modules/.bin/jest -i --no-cache --config=./server/tests/jest.debug.json server/tests"
+    "devtool-testdebug": "./node_modules/devtool/bin/index.js ./node_modules/.bin/jest -i --no-cache --config=./server/tests/jest.debug.json"
   },
   "pre-commit": "lint",
   "repository": {
@@ -40,7 +40,6 @@
   "homepage": "https://github.com/collectiveidea/maxclicky",
   "devDependencies": {
     "@kadira/storybook": "^2.21.0",
-    "babel-register": "https://registry.npmjs.org/babel-register/-/babel-register-6.11.6.tgz",
     "devtool": "^2.3.1",
     "eslint": "^3.12.2",
     "eslint-config-airbnb": "^13.0.0",
