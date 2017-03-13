@@ -14,6 +14,7 @@ describe('Database', () => {
   describe('getUser', () => {
     it('gets the user by ID', () => {
       const user = db.getUser('1')
+      debugger;
       expect(user.id).toBe('1')
       expect(user.email).toBe('jon@collectiveidea.com')
     })
