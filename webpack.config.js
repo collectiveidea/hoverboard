@@ -11,7 +11,7 @@ let devtool
 let plugins
 
 const htmlTemplate = new HtmlWebpackPlugin({
-  title: 'Relaid - Integrated with Relay, GraphQL, Express, ES6/ES7, JSX, Webpack, Babel, Material Design Lite, and PostCSS',
+  title: 'Hoverboard - Integrated with Relay, GraphQL, Express, ES6/ES7, JSX, Webpack, Babel, Material Design Lite, and PostCSS',
   template: './client/index.html',
   mobile: true,
   inject: false

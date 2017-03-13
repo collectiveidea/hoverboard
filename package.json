@@ -1,5 +1,5 @@
 {
-  "name": "relaid",
+  "name": "hoverboard",
   "version": "1.0.0",
   "description": "A full-stack relay boilerplate.",
   "scripts": {
@@ -19,7 +19,7 @@
   "pre-commit": "lint",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/collectiveidea/relaid.git"
+    "url": "git+https://github.com/collectiveidea/hoverboard.git"
   },
   "keywords": [
     "react",

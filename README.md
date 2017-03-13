@@ -1,14 +1,14 @@
-# relaid
+# Hoverboard
 An opinionated react + relay + graphql boilerplate (isomorphic, passportjs, postgresql, express, etc.)
 
 # About
 
-I've been a big fan and user of [relay-fullstack](https://github.com/collectiveidea/relaid.git),
+I've been a big fan and user of [relay-fullstack](https://github.com/lvarayut/relay-fullstack/),
 but it lacks a number of specific things that I use and need. So I end
 up spending a bunch of time tweaking it before I can really get started
 with it.
 
-Relaid, then, is an attempt to build a boilerplate based on `relay-fullstack` but
+Hoverboard, then, is an attempt to build a boilerplate based on `relay-fullstack` but
 that contains more of what I'd typically want in any new project, like
 user login with `passportjs` and JWT, `postgresql`, some basic
 mutations, testing with Jest, and so on.
@@ -23,7 +23,7 @@ For more, see the next section.
 
 # Technologies
 
-This project includes everything listed on the [relay-fullstack](https://github.com/collectiveidea/relaid.git)
+This project includes everything listed on the [relay-fullstack](https://github.com/lvarayut/relay-fullstack/)
 page, and adds the following:
 
 - Authentication via `passportjs` (database-only, for now).
