@@ -1,4 +1,4 @@
-class User {
+export default class User {
   constructor({ id, name, email, website, password, role }) {
     this.id = id
     this.name = name
@@ -8,14 +8,3 @@ class User {
     this.role = role
   }
 }
-
-class Post {
-  constructor({ id, title, body, userId }) {
-    this.id = id;
-    this.title = title;
-    this.body = body;
-    this.userId = userId;
-  }
-}
-
-export { User, Post }

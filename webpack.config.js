@@ -128,5 +128,12 @@ module.exports = {
       loader: 'file-loader'
     }]
   },
-  plugins
+  plugins,
+  resolve: {
+    modules: [
+      path.resolve('./client'),
+      path.resolve('./server'),
+      path.resolve('./node_modules')
+    ]
+  },
 }

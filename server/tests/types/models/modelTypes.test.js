@@ -1,8 +1,8 @@
 /* global describe it expect */
 
 import { graphql } from 'graphql'
-import schema from '../data/schema'
-import Database from '../data/database'
+import schema from 'config/schema'
+import Database from 'db/database'
 import { toGlobalId } from 'graphql-relay'
 
 describe('GraphQL', () => {

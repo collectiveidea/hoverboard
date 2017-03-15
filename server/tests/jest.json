@@ -6,5 +6,6 @@
   "roots": [
     "<rootDir>/server/tests"
   ],
-  "testEnvironment": "jest-environment-node-debug"
+  "moduleFileExtensions": ["js", "jsx"],
+  "moduleDirectories": ["server", "node_modules"]
 }

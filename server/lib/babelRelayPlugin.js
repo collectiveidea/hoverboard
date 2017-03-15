@@ -1,7 +1,7 @@
 /* eslint-disable no-var, func-names, prefer-arrow-callback, global-require */
 var fs = require('fs');
 var path = require('path');
-var jsonFile = path.join(__dirname, '../data/schema.json');
+var jsonFile = path.join(__dirname, '../config/schema.json');
 
 // Read the schema.json file only if it exists, this fixed
 // the problem of using babelRelayPlugin, defined in .babelrc,

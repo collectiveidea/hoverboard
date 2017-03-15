@@ -1,14 +1,11 @@
-import Logger from '../utils/logger'
-
-import {
-  User,
-  Post
-} from './models'
+import Logger from 'lib/logger'
+import User   from 'models/user'
+import Post   from 'models/post'
 
 import {
   usersList,
   postsList
-} from './seeds'
+} from 'db/seeds'
 
 class Database {
   constructor({ users, posts }) {

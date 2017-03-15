@@ -1,7 +1,5 @@
-import {
-  User,
-  Post,
-} from './models'
+import User from 'models/user'
+import Post from 'models/post'
 
 function usersList() {
   return [

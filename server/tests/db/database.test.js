@@ -1,7 +1,7 @@
 /* global describe it expect beforeEach */
 
-import Database from '../data/database'
-import { User, Post } from '../data/models'
+import Database from 'db/database'
+import { User, Post } from 'models/index'
 
 describe('Database', () => {
   const viewer = Database.getUser('1')

@@ -1,5 +1,5 @@
 {
-  "plugins": ["./server/utils/babelRelayPlugin"],
+  "plugins": ["./server/lib/babelRelayPlugin"],
   "presets": ["react", "es2015", "stage-0"],
   "env": {
     "development": {
@@ -13,8 +13,21 @@
             "transform": "react-transform-catch-errors",
             "imports": ["react", "redbox-react"]
           }]
+        }],
+        ["module-resolver", {
+          "root": ["./server"],
+          "alias": {
+            "test": "./server/test",
+            "server": "./server",
+            "types": "./server/types",
+            "models": "./server/models",
+            "underscore": "lodash"
+          }
         }]
       ]
+    },
+    "test": {
+      "plugins": ["transform-es2015-modules-commonjs"]
     }
   }
 }
