@@ -2,6 +2,10 @@ import chalk from 'chalk';
 import fs from 'fs';
 
 class Logger {
+  constructor() {
+    fs.mkdirSync('logs', (err) => {})
+  }
+
   logLine(label, input, output) {
     let line = chalk.dim(`[${Date.now()}]`) + `  ${chalk.blue(label)}`; // eslint-disable-line prefer-template
 
@@ -25,8 +29,12 @@ class Logger {
   }
 
   log(label, input, output) {
-    const line = this.logLine(label, input, output);
-    fs.appendFileSync(`logs/${process.env.NODE_ENV}.log`, `${line}\n`);
+    const fileName = `logs/${process.env.NODE_ENV}.log`
+    const line = `${this.logLine(label, input, output)}\n`
+
+    fs.appendFileSync(fileName, line, (err) => {
+      fs.writeFile(fileName, line)
+    });
   }
 
   print(label, input, output) {
