@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars, no-use-before-define */
 import { GraphQLObjectType } from 'graphql'
-import { userType, nodeField } from 'server/types/index'
+import { userType, nodeField } from 'types/index'
 import Logger from 'lib/logger'
 
 /**

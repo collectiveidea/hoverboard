@@ -1,6 +1,6 @@
 import { globalIdField } from 'graphql-relay'
 import { GraphQLObjectType, GraphQLString } from 'graphql'
-import { nodeInterface } from 'server/types/node/nodeDefinitions'
+import { nodeInterface } from 'types/node/nodeDefinitions'
 
 const postType = new GraphQLObjectType({
   name: 'Post',

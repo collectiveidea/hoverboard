@@ -11,7 +11,7 @@ import {
 } from 'graphql'
 
 import postType from 'types/models/postType'
-import { nodeInterface } from 'server/types/node/nodeDefinitions'
+import { nodeInterface } from 'types/node/nodeDefinitions'
 
 const userType = new GraphQLObjectType({
   name: 'User',

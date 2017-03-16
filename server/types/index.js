@@ -1,9 +1,9 @@
 import { connectionDefinitions } from 'graphql-relay'
-import { nodeInterface, nodeField } from 'server/types/node/nodeDefinitions'
+import { nodeInterface, nodeField } from 'types/node/nodeDefinitions'
 
 // Type Definitions
-import postType from 'server/types/models/postType'
-import userType from 'server/types/models/userType'
+import postType from 'types/models/postType'
+import userType from 'types/models/userType'
 
 export {
   nodeInterface,

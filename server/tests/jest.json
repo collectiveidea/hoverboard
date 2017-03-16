@@ -4,8 +4,8 @@
   "collectCoverage": false,
   "resetModules": true,
   "roots": [
-    "<rootDir>/server/tests"
+    "<rootDir>"
   ],
   "moduleFileExtensions": ["js", "jsx"],
-  "moduleDirectories": ["server", "node_modules"]
+  "moduleDirectories": ["server", "client", "node_modules"]
 }
