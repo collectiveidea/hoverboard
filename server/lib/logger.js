@@ -1,31 +1,27 @@
-import chalk from 'chalk';
-import fs from 'fs';
+import chalk from 'chalk'
+import fs from 'fs'
 
 class Logger {
-  constructor() {
-    fs.mkdirSync('logs', (err) => {})
-  }
-
   logLine(label, input, output) {
-    let line = chalk.dim(`[${Date.now()}]`) + `  ${chalk.blue(label)}`; // eslint-disable-line prefer-template
+    let line = chalk.dim(`[${Date.now()}]`) + `  ${chalk.blue(label)}` // eslint-disable-line prefer-template
 
     if (typeof input !== 'undefined') {
       if (typeof input === 'string') {
-        line = line.concat(`: \n${input}`);
+        line = line.concat(`: \n${input}`)
       } else {
-        line = line.concat(`: ${JSON.stringify(input)}`);
+        line = line.concat(`: ${JSON.stringify(input)}`)
       }
     }
 
     if (typeof output !== 'undefined') {
       if (typeof output === 'string') {
-        line = line.concat(`\n${chalk.green(output)}`);
+        line = line.concat(`\n${chalk.green(output)}`)
       } else {
-        line = line.concat(` => ${chalk.green(JSON.stringify(output))}`);
+        line = line.concat(` => ${chalk.green(JSON.stringify(output))}`)
       }
     }
 
-    return line;
+    return line
   }
 
   log(label, input, output) {
@@ -34,13 +30,13 @@ class Logger {
 
     fs.appendFileSync(fileName, line, (err) => {
       fs.writeFile(fileName, line)
-    });
+    })
   }
 
   print(label, input, output) {
-    console.log(this.logLine(label, input, output)); // eslint-disable-line no-console
-    this.log(label, input, output);
+    console.log(this.logLine(label, input, output)) // eslint-disable-line no-console
+    this.log(label, input, output)
   }
 }
 
-export default new Logger;
+export default new Logger

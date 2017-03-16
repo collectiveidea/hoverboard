@@ -1,17 +1,17 @@
-import jwt from 'jsonwebtoken';
-import config from './config/environment';
-import Database from './data/database';
-import Logger from './utils/logger';
+import jwt from 'jsonwebtoken'
+import config from './config/environment'
+import Database from './data/database'
+import Logger from './utils/logger'
 
 // Users
 const ANONYMOUS_TOKEN_DATA = {
   id: 'anonymous',
   role: config.roles.anonymous,
-};
+}
 
 export function createAnonymousUser() {
   // For now, because Chrome sucks, just use jstokes:
-  return Database.getUser('1');
+  return Database.getUser('1')
   // return new User(
   //   ANONYMOUS_TOKEN_DATA.id,
   //   '',
@@ -23,90 +23,90 @@ export function createAnonymousUser() {
 }
 
 export function decodeToken(token) {
-  return jwt.verify(token, config.secret);
+  return jwt.verify(token, config.secret)
 }
 
 function findUserFromTokenData(tokenData) {
   return new Promise((resolve) => {
-    let user;
+    let user
 
     if (tokenData.id === 'anonymous') {
-      user = createAnonymousUser();
+      user = createAnonymousUser()
     } else {
-      user = Database.getUser(tokenData.id);
+      user = Database.getUser(tokenData.id)
     }
-    Logger.print('findUserFromTokenData', tokenData, user);
-    resolve(user);
-  });
+    Logger.print('findUserFromTokenData', tokenData, user)
+    resolve(user)
+  })
 }
 
 function loadSessionData(req) {
-  let sessionData;
+  let sessionData
   if (req.session && req.session.token) {
     sessionData = new Promise((resolve) => {
-      let tokenData = null;
+      let tokenData = null
       try {
-        tokenData = decodeToken(req.session.token);
+        tokenData = decodeToken(req.session.token)
       } catch (err) {
-        Logger.print(err);
+        Logger.print(err)
       }
-      Logger.print('loadSessionData', req.session, tokenData);
-      resolve(tokenData);
-    });
+      Logger.print('loadSessionData', req.session, tokenData)
+      resolve(tokenData)
+    })
   } else {
     sessionData = new Promise((resolve) => {
-      Logger.print('loadSessionData', req.session);
-      resolve(null);
-    });
+      Logger.print('loadSessionData', req.session)
+      resolve(null)
+    })
   }
-  return sessionData;
+  return sessionData
 }
 
 export function hasAuthorization(actualRole, expectedRole, next) {
   if (actualRole === expectedRole) {
-    return next();
+    return next()
   } else { // eslint-disable-line no-else-return
-    return () => null;
+    return () => null
   }
 }
 
 // Tokens
 export function createToken(userData) {
-  let token;
+  let token
 
   if (userData && userData.id) {
-    const { id, role } = userData;
-    token = jwt.sign({ id, role }, config.secret);
+    const { id, role } = userData
+    token = jwt.sign({ id, role }, config.secret)
   } else {
-    token = jwt.sign(ANONYMOUS_TOKEN_DATA, config.secret);
+    token = jwt.sign(ANONYMOUS_TOKEN_DATA, config.secret)
   }
-  Logger.print('createToken', userData, token);
-  return token;
+  Logger.print('createToken', userData, token)
+  return token
 }
 
 export function createAnonymousToken() {
-  return createToken();
+  return createToken()
 }
 
 export function authenticateUser(req, res, next) {
-  Logger.print('authenticateUser', req.session);
+  Logger.print('authenticateUser', req.session)
   loadSessionData(req).then(tokenData => {
     if (!tokenData) {
-      req.user = createAnonymousUser(); // eslint-disable-line no-param-reassign
-      req.session.token = createAnonymousToken(); // eslint-disable-line no-param-reassign
-      next();
+      req.user = createAnonymousUser() // eslint-disable-line no-param-reassign
+      req.session.token = createAnonymousToken() // eslint-disable-line no-param-reassign
+      next()
     } else {
       findUserFromTokenData(tokenData).then(user => {
         if (!user) {
-          res.sendStatus(404);
+          res.sendStatus(404)
         } else {
-          req.user = user; // eslint-disable-line no-param-reassign
+          req.user = user // eslint-disable-line no-param-reassign
         }
-        next();
-      });
+        next()
+      })
     }
   }).catch((err) => {
-    Logger.print('authenticateUser Error', req.session, err);
-    res.sendStatus(400);
-  });
+    Logger.print('authenticateUser Error', req.session, err)
+    res.sendStatus(400)
+  })
 }
