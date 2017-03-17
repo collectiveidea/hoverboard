@@ -3,10 +3,10 @@
 import { graphql } from 'graphql'
 import { toGlobalId } from 'graphql-relay'
 import schema from 'config/schema'
-import Database from 'db/database'
+import { db } from 'db/database'
 
 describe('PostType', () => {
-  const user = Database.getUser('1')
+  const user = db.getUser('1')
 
   it('returns the correct post associated with a user ', async () => {
     const postId = toGlobalId('Post', '1')

@@ -1,5 +1,6 @@
 import {
   globalIdField,
+  fromGlobalId,
   connectionArgs,
   connectionDefinitions,
   connectionFromArray,
