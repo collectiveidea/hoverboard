@@ -1,7 +1,8 @@
 import {
   globalIdField,
   connectionArgs,
-  connectionDefinitions
+  connectionDefinitions,
+  connectionFromArray,
 } from 'graphql-relay'
 
 import {
@@ -13,6 +14,7 @@ import {
 import { db } from 'db/database'
 import { nodeInterface } from 'types/node/nodeDefinitions'
 import postType from 'types/models/postType'
+import Logger from 'lib/logger'
 
 const userType = new GraphQLObjectType({
   name: 'User',
@@ -32,10 +34,10 @@ const userType = new GraphQLObjectType({
     },
     posts: {
       type: postConnection, // eslint-disable-line no-use-before-define
-      description: 'Unarchived posts that I have',
+      description: 'Posts that I have',
       args: connectionArgs,
       resolve: (user, args) => connectionFromArray(
-        db.withViewer(user).getPosts(args, s => !s.archived),
+        db.withViewer(user).getPosts(args),
         args
       )
     },

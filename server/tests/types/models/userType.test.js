@@ -56,6 +56,6 @@ describe('UserType', () => {
     expect(data.viewer.email).toBe(user.email)
     expect(data.viewer.role).toBe(user.role)
     expect(data.viewer.website).toBe(user.website)
-    expect(data.viewer.posts.edges.length).toBe(1)
+    expect(data.viewer.posts.edges.length).toBe(2)
   })
 })
