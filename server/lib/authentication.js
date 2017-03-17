@@ -1,7 +1,7 @@
-import jwt from 'jsonwebtoken'
-import config from './config/environment'
-import Database from './data/database'
-import Logger from './utils/logger'
+import config from 'config/environment'
+import Logger from 'utils/logger'
+import { db } from 'db/database'
+
 
 // Users
 const ANONYMOUS_TOKEN_DATA = {

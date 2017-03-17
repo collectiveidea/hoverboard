@@ -155,7 +155,7 @@
             },
             {
               "name": "posts",
-              "description": "Unarchived posts that I have",
+              "description": "Posts that I have",
               "args": [
                 {
                   "name": "after",

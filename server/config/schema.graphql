@@ -69,7 +69,7 @@ type User implements Node {
   # A post of mine.
   post(id: String!): Post
 
-  # Unarchived posts that I have
+  # Posts that I have
   posts(after: String, first: Int, before: String, last: Int): PostConnection
 
   # Users's email

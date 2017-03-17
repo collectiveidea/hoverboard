@@ -1,3 +1,4 @@
 export default {
-  // Put your test configuration here
+  secret: 'server_secret',
 }
+

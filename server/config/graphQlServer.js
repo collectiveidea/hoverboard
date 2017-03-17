@@ -1,26 +1,51 @@
 import chalk from 'chalk'
 import express from 'express'
+import session from 'express-session'
 import graphQLHTTP from 'express-graphql'
-import cookieSession from 'cookie-session'
-import Logger from './lib/logger'
-import schema from './schema'
-import { authenticateUser } from './lib/authentication'
+import Logger from 'lib/logger'
+import schema from 'config/schema'
 import bodyParser from 'body-parser'
+import uuid from 'node-uuid'
+import passport from 'passport'
+import { Strategy } from 'passport-local'
+import { db } from 'db/database'
 
 export default function createGraphQlServer(config) {
-  // Expose a GraphQL endpoint
-  const graphql = express()
+  // Set up passport
+  passport.use(new Strategy(
+    (username, password, done) => done(null, db.getUser('1'))
+  ))
 
-  graphql.use(cookieSession({
-    name: 'maxclicky_session',
-    keys: ['id', 'token']
+  passport.serializeUser(function(user, done) {
+    done(null, user.id)
+  })
+
+  passport.deserializeUser(function(id, done) {
+    done(null, db.getUser(id))
+  })
+
+  // Expose a GraphQL endpoint
+  const app = express()
+
+  app.use(bodyParser.json()) // for parsing application/json
+  app.use(bodyParser.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
+
+  app.post('/login', passport.authenticate('local', {
+    successRedirect: '/',
+    failureRedirect: '/login',
+    failureFlash: true
+  }) );
+
+  app.use(session({
+   genid: (req) => uuid.v4(),
+   secret: config.secret
   }))
 
-  graphql.use(bodyParser.json()) // for parsing application/json
-  graphql.use(bodyParser.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
-
-  graphql.use('/', authenticateUser, graphQLHTTP((req) => {
-    const { user, session, body, method, originalUrl } = req
+  app.use('/', graphQLHTTP((req) => {
+    // const { user, session, body, method, originalUrl } = req
+    const { session, body, method, originalUrl } = req
+    const user = db.getUser('1')
+    
     Logger.print(`graphQLHTTP ${method} ${originalUrl}`, body.query, user)
     return {
       graphiql: true,
@@ -31,7 +56,7 @@ export default function createGraphQlServer(config) {
   }
   ))
 
-  return graphql.listen(
+  return app.listen(
     config.graphql.port,
     () => console.log(chalk.green(`GraphQL is listening on port ${config.graphql.port}`)) // eslint-disable-line no-console
   )
