@@ -1,23 +1,37 @@
 import express from 'express'
 import session from 'express-session'
 import graphQLHTTP from 'express-graphql'
-import Logger from 'lib/logger'
-import schema from 'config/schema'
 import bodyParser from 'body-parser'
 import uuid from 'node-uuid'
 import passport from 'passport'
 import { Strategy } from 'passport-local'
+
+import historyApiFallback from 'connect-history-api-fallback'
+import path from 'path'
+import webpack from 'webpack'
+import WebpackDevServer from 'webpack-dev-server'
+
+import webpackConfig from './../webpack.config'
+import Logger from 'lib/logger'
+import schema from 'config/schema'
 import { db } from 'db/database'
 
 export default class Api {
   // create the express instance, attach app-level middleware, attach routers
-  constructor({ env, secret }) {
+  constructor({ env, secret, graphqlConfig }) {
     this.env = env
     this.secret = secret
-    this.express = express()
+    this.graphQlPort = graphql.port
+
+    this.server = express()
     this.passport()
     this.middleware()
     this.routes()
+
+    // Set up a separate relay server using webpack, and proxy `graphql` requests
+    // to the server
+    if (env == 'development') {
+    }
   }
 
   // Configure passport
@@ -37,40 +51,55 @@ export default class Api {
 
   // Register middleware
   middleware() {
-    this.express.use(bodyParser.json()) // for parsing application/json
-    this.express.use(bodyParser.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
-
-    this.express.use(session({
+    this.server.use(bodyParser.json()) // for parsing application/json
+    this.server.use(bodyParser.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
+    this.server.use(session({
       genid: (req) => uuid.v4(),
       secret: this.secret
     }))
+
+    if (env == 'production') {
+      this.server.use(historyApiFallback())
+    }
   }
 
   // connect resource routers
   routes() {
     // Login endpoint
-    this.express.post('/login', passport.authenticate('local', {
+    this.server.post('/login', passport.authenticate('local', {
       successRedirect: '/',
       failureRedirect: '/login',
       failureFlash: true
     }) )
 
-    // Graphql endpoint
-    this.express.use('/', graphQLHTTP((req) => {
-      // const { user, session, body, method, originalUrl } = req
-      const { session, body, method, originalUrl } = req
+    if (env == 'production') {
+      this.server.use('/', express.static(path.join(__dirname, '../build')))
+      this.server.use('/graphql', graphQLHTTP((req) => {
+        const { user, session } = req
 
-      // FIXME: Stub in user for now until we get passport working
-      const user = db.getUser('1')
+        return {
+          schema,
+          context: { user, session }
+        }
+      }))
+    } else {
+      this.server.use('/', graphQLHTTP((req) => {
+        // const { user, session, body, method, originalUrl } = req
+        const { session, body, method, originalUrl } = req
 
-      Logger.print(`graphQLHTTP ${method} ${originalUrl}`, body.query, user)
+        // FIXME: Stub in user for now until we get passport working
+        const user = db.getUser('1')
 
-      return {
-        graphiql: true,
-        pretty: true,
-        schema,
-        context: { user, session }
-      }
-    }))
+        Logger.print(`graphQLHTTP ${method} ${originalUrl}`, body.query, user)
+
+        return {
+          graphiql: true,
+          pretty: true,
+          schema,
+          context: { user, session }
+        }
+      }))
+      this.webpackDevServer.use('/', express.static(path.join(__dirname, '../build')))
+    }
   }
 }
