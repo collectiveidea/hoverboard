@@ -1,6 +1,6 @@
 /* global describe it expect beforeEach */
 
-import { User } from 'models/index'
+import { User } from 'models'
 
 describe('User', () => {
   describe('constructor', () => {

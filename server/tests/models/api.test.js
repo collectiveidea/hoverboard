@@ -1,8 +1,8 @@
 /* global describe it expect beforeEach */
 
-import { Post } from 'models'
+import { Api } from 'models'
 
-describe('Post', () => {
+describe('Api', () => {
   describe('constructor', () => {
     it('accepts the correct args', () => {
       const post = new Post({

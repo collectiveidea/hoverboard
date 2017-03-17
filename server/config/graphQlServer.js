@@ -1,4 +1,3 @@
-import chalk from 'chalk'
 import express from 'express'
 import session from 'express-session'
 import graphQLHTTP from 'express-graphql'
@@ -45,19 +44,16 @@ export default function createGraphQlServer(config) {
     // const { user, session, body, method, originalUrl } = req
     const { session, body, method, originalUrl } = req
     const user = db.getUser('1')
-    
+
     Logger.print(`graphQLHTTP ${method} ${originalUrl}`, body.query, user)
+    
     return {
       graphiql: true,
       pretty: true,
       schema,
       context: { user, session }
     }
-  }
-  ))
+  }))
 
-  return app.listen(
-    config.graphql.port,
-    () => console.log(chalk.green(`GraphQL is listening on port ${config.graphql.port}`)) // eslint-disable-line no-console
-  )
+  return app
 }
