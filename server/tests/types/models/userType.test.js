@@ -3,7 +3,7 @@
 import { graphql } from 'graphql'
 import { toGlobalId } from 'graphql-relay'
 import schema from 'config/schema'
-import Database from 'db/database'
+import { db } from 'db/database'
 
 describe('UserType', () => {
   it('should be null when user is not logged in', async () => {
@@ -15,7 +15,6 @@ describe('UserType', () => {
         }
       }
     `
-
     const rootValue = {}
     const context = {}
 
@@ -26,7 +25,7 @@ describe('UserType', () => {
   })
 
   it('should return the current user when user is logged in', async () => {
-    const user = Database.getUser('1')
+    const user = db.getUser('1')
 
     const query = `
       query {
@@ -57,6 +56,6 @@ describe('UserType', () => {
     expect(data.viewer.email).toBe(user.email)
     expect(data.viewer.role).toBe(user.role)
     expect(data.viewer.website).toBe(user.website)
-    expect(data.viewer.posts.edges.length).toBe(4)
+    expect(data.viewer.posts.edges.length).toBe(1)
   })
 })

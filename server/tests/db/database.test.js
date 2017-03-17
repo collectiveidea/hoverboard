@@ -1,42 +1,46 @@
-/* global describe it expect beforeEach */
+/* global describe it expect beforeEach afterEach */
 
-import Database from 'db/database'
+import { Database } from 'db/database'
 import { User, Post } from 'models/index'
 
 describe('Database', () => {
-  const viewer = Database.getUser('1')
-  const db = Database.withViewer(viewer)
+  let db
+  let user = new User({
+    id: '1',
+    name: 'Alice',
+    email: 'alice@example.com',
+    website: 'http://example.com',
+    password: 'password',
+    role: 'admin'
+  })
+
+  let post = new Post({
+    id: '1',
+    title: 'Title',
+    body: 'Body',
+    userId: user.id
+  })
 
   beforeEach(() => {
-    Database.reset()
+    db = new Database({ users: [user], posts: [post] })
+    db.viewer = user
   })
 
   describe('getUser', () => {
     it('gets the user by ID', () => {
-      const user = db.getUser('1')
-
-      expect(user.id).toBe('1')
-      expect(user.email).toBe('jon@collectiveidea.com')
+      expect(db.getUser('1')).toEqual(user)
     })
   })
 
   describe('getPost', () => {
     it('gets the post for a viewer and ID', () => {
-      const post = db.getPost('1')
-      const expectedPost = {
-        id: '1',
-        userId: db.viewer.id,
-        title: 'This is a taco post',
-        body: 'Mmmm... tacos.'
-      }
-
-      expect(post).toEqual(expectedPost)
+      expect(db.getPost('1')).toEqual(post)
     })
   })
 
   describe('getPosts', () => {
     it('gets a list of posts for a user', () => {
-      const expectedPostIds = ['1', '2',]
+      const expectedPostIds = ['1']
       const postIds = db.getPosts({}).map(s => s.id)
 
       expect(postIds).toEqual(expectedPostIds)

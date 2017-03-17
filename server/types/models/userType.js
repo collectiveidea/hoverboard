@@ -10,8 +10,9 @@ import {
   GraphQLString
 } from 'graphql'
 
-import postType from 'types/models/postType'
+import { db } from 'db/database'
 import { nodeInterface } from 'types/node/nodeDefinitions'
+import postType from 'types/models/postType'
 
 const userType = new GraphQLObjectType({
   name: 'User',
@@ -26,7 +27,7 @@ const userType = new GraphQLObjectType({
       },
       resolve: (user, args) => {
         const id = fromGlobalId(args.id).id
-        return Database.withViewer(user).getPost(id)
+        return db.withViewer(user).getPost(id)
       }
     },
     posts: {
@@ -34,7 +35,7 @@ const userType = new GraphQLObjectType({
       description: 'Unarchived posts that I have',
       args: connectionArgs,
       resolve: (user, args) => connectionFromArray(
-        Database.withViewer(user).getStories(args, s => !s.archived),
+        db.withViewer(user).getPosts(args, s => !s.archived),
         args
       )
     },

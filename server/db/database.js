@@ -84,4 +84,10 @@ class Database {
   }
 }
 
-export default new Database({ users: usersList(), posts: postsList() })
+// Make a seeded db available for export
+const db = new Database({ users: usersList(), posts: postsList() })
+
+export {
+  db,
+  Database
+}
