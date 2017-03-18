@@ -1,3 +1,9 @@
 export default {
-  // Put your production configuration here
+  secret: 'server_prod_secret',
+  graphQLPort: 3000,
+  graphQLEndpoint: '/',
+  graphql: {
+    graphiql: false,
+    pretty: false
+  }
 }

@@ -17,21 +17,17 @@ import schema from 'config/schema'
 import { db } from 'db/database'
 
 export default class Api {
-  // create the express instance, attach app-level middleware, attach routers
-  constructor({ env, secret, graphqlConfig }) {
-    this.env = env
-    this.secret = secret
-    this.graphQlPort = graphql.port
+  constructor({relayServer, relayPort, middleware, graphQLServer, graphQLPort, graphQLEndpoint}) {
+    this.relayServer = relayServer
+    this.relayPort = relayPort
+    this.middlewareList = middleware || []
 
-    this.server = express()
-    this.passport()
+    this.graphQLServer = graphQLServer
+    this.graphQLPort = graphQLPort
+    this.graphQLEndpoint = graphQLEndpoint
+
     this.middleware()
-    this.routes()
-
-    // Set up a separate relay server using webpack, and proxy `graphql` requests
-    // to the server
-    if (env == 'development') {
-    }
+    this.routing()
   }
 
   // Configure passport
@@ -49,57 +45,41 @@ export default class Api {
     })
   }
 
-  // Register middleware
   middleware() {
-    this.server.use(bodyParser.json()) // for parsing application/json
-    this.server.use(bodyParser.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
-    this.server.use(session({
+    this.middlewareList.forEach((el) =>
+      this.relayServer.use(el)
+    )
+
+    this.relayServer.use(bodyParser.json()) // for parsing application/json
+    this.relayServer.use(bodyParser.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
+    this.relayServer.use(session({
       genid: (req) => uuid.v4(),
       secret: this.secret
     }))
-
-    if (env == 'production') {
-      this.server.use(historyApiFallback())
-    }
   }
 
-  // connect resource routers
-  routes() {
-    // Login endpoint
-    this.server.post('/login', passport.authenticate('local', {
-      successRedirect: '/',
-      failureRedirect: '/login',
-      failureFlash: true
-    }) )
+  routing() {
+    this.graphQLServer.use(this.graphQLEndpoint, graphQLHTTP((req) => {
+      const context = {
+        user: req.user,
+        session: req.session
+      }
+      return _.extend({ schema, context}, config.graphql)
+    }))
 
-    if (env == 'production') {
-      this.server.use('/', express.static(path.join(__dirname, '../build')))
-      this.server.use('/graphql', graphQLHTTP((req) => {
-        const { user, session } = req
+    this.relayServer.use('/', express.static(path.join(__dirname, '../build')));
+  }
 
-        return {
-          schema,
-          context: { user, session }
-        }
-      }))
-    } else {
-      this.server.use('/', graphQLHTTP((req) => {
-        // const { user, session, body, method, originalUrl } = req
-        const { session, body, method, originalUrl } = req
+  listen() {
+    this.relayServer.listen(this.relayPort, () =>
+      console.log(chalk.green(`Relay is listening on port ${this.relayPort}`))
+    );
 
-        // FIXME: Stub in user for now until we get passport working
-        const user = db.getUser('1')
-
-        Logger.print(`graphQLHTTP ${method} ${originalUrl}`, body.query, user)
-
-        return {
-          graphiql: true,
-          pretty: true,
-          schema,
-          context: { user, session }
-        }
-      }))
-      this.webpackDevServer.use('/', express.static(path.join(__dirname, '../build')))
+    // If the graphql server is on a separate port, make it listen on that port.
+    if (this.graphQLPort && (this.graphQLPort != this.relayPort)) {
+      this.graphQLServer.listen(this.graphQLPort, () =>
+        console.log(chalk.green(`GraphQL is listening on port ${this.graphQLPort}`))
+      );
     }
   }
 }
