@@ -2,8 +2,8 @@
 import config from 'config/environment'
 import schema from 'config/schema'
 import _ from 'lodash'
-import Api from 'models/api'
+import App from 'hoverBoard/app'
 
-const api = new Api(_.extend(config, { schema }))
+const app = new App(_.extend(config, { schema }))
 
-api.listen()
+app.listen()

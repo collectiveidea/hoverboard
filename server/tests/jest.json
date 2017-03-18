@@ -7,5 +7,5 @@
     "<rootDir>"
   ],
   "moduleFileExtensions": ["js", "jsx"],
-  "moduleDirectories": ["server", "client", "node_modules"]
+  "moduleDirectories": ["server", "client", "hoverBoard", "node_modules"]
 }

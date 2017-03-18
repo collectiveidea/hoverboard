@@ -1,5 +1,4 @@
 /* global describe it expect beforeEach */
-
 import { Post } from 'models'
 
 describe('Post', () => {

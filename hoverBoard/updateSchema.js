@@ -6,8 +6,8 @@ import chalk from 'chalk'
 import { introspectionQuery, printSchema } from 'graphql/utilities'
 import schema from 'server/config/schema'
 
-const jsonFile = path.join(__dirname, './../config/schema.json')
-const graphQLFile = path.join(__dirname, './../config/schema.graphql')
+const jsonFile = path.join(__dirname, './../server/config/schema.json')
+const graphQLFile = path.join(__dirname, './../server/config/schema.graphql')
 
 async function updateSchema() {
   try {

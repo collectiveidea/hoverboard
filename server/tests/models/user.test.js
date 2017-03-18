@@ -1,5 +1,4 @@
 /* global describe it expect beforeEach */
-
 import { User } from 'models'
 
 describe('User', () => {

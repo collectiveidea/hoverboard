@@ -4,7 +4,7 @@
   "description": "A full-stack relay boilerplate.",
   "scripts": {
     "start": "nodemon --watch 'server/data/**/*.js' --exec 'yarn run update && babel-node server/index.js'",
-    "update": "./node_modules/.bin/babel-node server/lib/updateSchema.js",
+    "update": "./node_modules/.bin/babel-node hoverBoard/updateSchema.js",
     "deploy": "npm run clean && cross-env NODE_ENV=production webpack --config webpack.config.js && npm run update && npm run build-server && cross-env NODE_ENV=production node ./build/index.js",
     "build-server": "cross-env NODE_ENV=production ./node_modules/.bin/babel ./server --out-dir ./build",
     "lint": "eslint --ignore-path .gitignore client server",

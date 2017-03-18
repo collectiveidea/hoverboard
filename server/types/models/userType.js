@@ -15,7 +15,7 @@ import {
 import { db } from 'db/database'
 import { nodeInterface } from 'types/node/nodeDefinitions'
 import postType from 'types/models/postType'
-import Logger from 'lib/logger'
+import Logger from 'hoverBoard/logger'
 
 const userType = new GraphQLObjectType({
   name: 'User',

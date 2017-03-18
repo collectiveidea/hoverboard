@@ -1,5 +1,5 @@
 {
-  "plugins": ["./server/lib/babelRelayPlugin"],
+  "plugins": ["./hoverBoard/babelRelayPlugin"],
   "presets": ["react", "es2015", "stage-0"],
   "env": {
     "development": {
@@ -15,8 +15,9 @@
           }]
         }],
         ["module-resolver", {
-          "root": ["./server"],
+          "root": ["./server", "./client", "./hoverBoard"],
           "alias": {
+            "hoverBoard": "./hoverBoard",
             "test": "./server/test",
             "server": "./server",
             "types": "./server/types",

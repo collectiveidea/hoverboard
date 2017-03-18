@@ -1,6 +1,6 @@
 import webpack from 'webpack'
 import WebpackDevServer from 'webpack-dev-server'
-import webpackConfig from './../../webpack.config'
+import webpackConfig from './../webpack.config'
 
 const devServer = (proxy) => new WebpackDevServer(webpack(webpackConfig), {
   contentBase: '/build/',

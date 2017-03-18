@@ -1,4 +1,4 @@
-import Logger from 'lib/logger'
+import Logger from 'hoverBoard/logger'
 import User   from 'models/user'
 import Post   from 'models/post'
 

@@ -1,7 +1,7 @@
 /* eslint-disable global-require */
 import _ from 'lodash'
 import express from 'express';
-import devServer from 'lib/devServer'
+import devServer from 'hoverBoard/devServer'
 
 const port = process.env.PORT || 3000
 

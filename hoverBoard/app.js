@@ -8,11 +8,11 @@ import { Strategy } from 'passport-local'
 import path from 'path'
 import chalk from 'chalk'
 
-import Logger from 'lib/logger'
+import Logger from 'hoverBoard/logger'
 import schema from 'config/schema'
 import { db } from 'db/database'
 
-export default class Api {
+export default class App {
   constructor({ secret, relay, graphQL }) {
     this.secret = secret
     this.relay = relay
@@ -49,6 +49,8 @@ export default class Api {
     server.use(bodyParser.json()) // for parsing application/json
     server.use(bodyParser.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
     server.use(session({
+      resave: true,
+      saveUninitialized: true,
       genid: (req) => uuid.v4(),
       secret: this.secret
     }))

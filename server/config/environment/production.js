@@ -1,6 +1,5 @@
 import express from 'express'
 import historyApiFallback from 'connect-history-api-fallback';
-import devServer from 'lib/devServer'
 
 const relayServer = express()
 

@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars, no-use-before-define */
 import { GraphQLObjectType } from 'graphql'
 import { userType, nodeField } from 'types/index'
-import Logger from 'lib/logger'
+import Logger from 'hoverBoard/logger'
 
 /**
  * This is the type that will be the root of our query,
