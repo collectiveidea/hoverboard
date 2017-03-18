@@ -6,6 +6,7 @@ import uuid from 'node-uuid'
 import passport from 'passport'
 import { Strategy } from 'passport-local'
 import path from 'path'
+import chalk from 'chalk'
 
 import Logger from 'lib/logger'
 import schema from 'config/schema'
@@ -15,11 +16,13 @@ export default class Api {
   constructor({ secret, relay, graphQL }) {
     this.secret = secret
     this.relay = relay
-    this.graphQL = graphQl
+    this.graphQL = graphQL
 
     this.passport()
     this.middleware()
     this.routing()
+
+    this.listen = this.listen.bind(this)
   }
 
   passport() {
@@ -54,13 +57,21 @@ export default class Api {
   routing() {
     const { relay, graphQL } = this
 
+    // Set up graphql endpoint
     graphQL.server.use(graphQL.endpoint, graphQLHTTP((req) => {
       const context = { user: req.user, session: req.session }
 
       return _.extend(graphQL.requestOptions, { schema, context})
     }))
 
-    relay.server.use('/', express.static(path.join(__dirname, '../build')));
+    // Set up the other endpoints
+    relay.server.use('/', express.static(path.join(__dirname, '../build')))
+
+    relay.server.use('/login', passport.authenticate('local', {
+      successRedirect: '/',
+      failureRedirect: '/login',
+      failureFlash: true
+    }) )
   }
 
   listen() {
@@ -72,7 +83,7 @@ export default class Api {
 
     // If the graphql server is on a separate port, make it listen on that port.
     if (graphQL.port && (graphQL.port != relay.port)) {
-      graqhQL.server.listen(graphQL.port, () =>
+      graphQL.server.listen(graphQL.port, () =>
         console.log(chalk.green(`GraphQL is listening on port ${graphQL.port}`))
       );
     }

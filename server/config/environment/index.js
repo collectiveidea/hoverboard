@@ -3,12 +3,14 @@ import _ from 'lodash'
 import express from 'express';
 import devServer from 'lib/devServer'
 
+const port = process.env.PORT || 3000
+
 const config = {
   env: process.env.NODE_ENV || 'development',
   secret: process.env.SECRET || 'dev_secret',
   relay: {
-    server: devServer(),
-    port: process.env.PORT || 3000,
+    server: devServer({ '/graphql': `http://localhost:${port}` }),
+    port: port,
     endpoint: '/',
     middleware: []
   },
