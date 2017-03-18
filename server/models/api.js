@@ -5,32 +5,23 @@ import bodyParser from 'body-parser'
 import uuid from 'node-uuid'
 import passport from 'passport'
 import { Strategy } from 'passport-local'
-
-import historyApiFallback from 'connect-history-api-fallback'
 import path from 'path'
-import webpack from 'webpack'
-import WebpackDevServer from 'webpack-dev-server'
 
-import webpackConfig from './../webpack.config'
 import Logger from 'lib/logger'
 import schema from 'config/schema'
 import { db } from 'db/database'
 
 export default class Api {
-  constructor({relayServer, relayPort, middleware, graphQLServer, graphQLPort, graphQLEndpoint}) {
-    this.relayServer = relayServer
-    this.relayPort = relayPort
-    this.middlewareList = middleware || []
+  constructor({ secret, relay, graphQL }) {
+    this.secret = secret
+    this.relay = relay
+    this.graphQL = graphQl
 
-    this.graphQLServer = graphQLServer
-    this.graphQLPort = graphQLPort
-    this.graphQLEndpoint = graphQLEndpoint
-
+    this.passport()
     this.middleware()
     this.routing()
   }
 
-  // Configure passport
   passport() {
     passport.use(new Strategy(
       (username, password, done) => done(null, db.getUser('1'))
@@ -46,39 +37,43 @@ export default class Api {
   }
 
   middleware() {
-    this.middlewareList.forEach((el) =>
-      this.relayServer.use(el)
-    )
+    const { server, middleware } = this.relay
 
-    this.relayServer.use(bodyParser.json()) // for parsing application/json
-    this.relayServer.use(bodyParser.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
-    this.relayServer.use(session({
+    // Load environment-specific middleware
+    middleware.forEach((el) => server.use(el))
+
+    // Load shared middleware
+    server.use(bodyParser.json()) // for parsing application/json
+    server.use(bodyParser.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
+    server.use(session({
       genid: (req) => uuid.v4(),
       secret: this.secret
     }))
   }
 
   routing() {
-    this.graphQLServer.use(this.graphQLEndpoint, graphQLHTTP((req) => {
-      const context = {
-        user: req.user,
-        session: req.session
-      }
-      return _.extend({ schema, context}, config.graphql)
+    const { relay, graphQL } = this
+
+    graphQL.server.use(graphQL.endpoint, graphQLHTTP((req) => {
+      const context = { user: req.user, session: req.session }
+
+      return _.extend(graphQL.requestOptions, { schema, context})
     }))
 
-    this.relayServer.use('/', express.static(path.join(__dirname, '../build')));
+    relay.server.use('/', express.static(path.join(__dirname, '../build')));
   }
 
   listen() {
-    this.relayServer.listen(this.relayPort, () =>
-      console.log(chalk.green(`Relay is listening on port ${this.relayPort}`))
+    const { relay, graphQL } = this
+
+    relay.server.listen(relay.port, () =>
+      console.log(chalk.green(`Relay is listening on port ${relay.port}`))
     );
 
     // If the graphql server is on a separate port, make it listen on that port.
-    if (this.graphQLPort && (this.graphQLPort != this.relayPort)) {
-      this.graphQLServer.listen(this.graphQLPort, () =>
-        console.log(chalk.green(`GraphQL is listening on port ${this.graphQLPort}`))
+    if (graphQL.port && (graphQL.port != relay.port)) {
+      graqhQL.server.listen(graphQL.port, () =>
+        console.log(chalk.green(`GraphQL is listening on port ${graphQL.port}`))
       );
     }
   }

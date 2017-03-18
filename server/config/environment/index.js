@@ -1,25 +1,25 @@
 /* eslint-disable global-require */
 import _ from 'lodash'
+import express from 'express';
+import devServer from 'lib/devServer'
 
 const config = {
   env: process.env.NODE_ENV || 'development',
-  port: process.env.PORT || 3000,
-  graphQLPort: 8000,
-  graphQLEndpoint: '/graphql',
-  graphql: {
-    graphiql: true,
-    pretty: true
+  secret: process.env.SECRET || 'dev_secret',
+  relay: {
+    server: devServer(),
+    port: process.env.PORT || 3000,
+    endpoint: '/',
+    middleware: []
   },
-  secret: 'server_secret',
-  roles: {
-    anonymous: 'anonymous',
-    reader: 'user',
-    publisher: 'publisher',
-    admin: 'admin'
-  },
-  errors: {
-    EmailAlreadyTaken: 'User with email already exists',
-    WrongEmailOrPassword: 'Wrong email or password'
+  graphQL: {
+    server: express(),
+    port: 8000,
+    endpoint: '/graphql',
+    requestOptions: {
+      graphiql: true,
+      pretty: true
+    }
   }
 }
 

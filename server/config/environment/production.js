@@ -1,9 +1,23 @@
+import express from 'express'
+import historyApiFallback from 'connect-history-api-fallback';
+import devServer from 'lib/devServer'
+
+const relayServer = express()
+
 export default {
-  secret: 'server_prod_secret',
-  graphQLPort: 3000,
-  graphQLEndpoint: '/',
-  graphql: {
-    graphiql: false,
-    pretty: false
+  relay: {
+    server: relayServer,
+    port: process.env.PORT || 3000,
+    endpoint: '/',
+    middleware:  [ historyApiFallback() ]
+  },
+  graphQL: {
+    server: relayServer,
+    port: 3000,
+    endpoint: '/graphql',
+    requestOptions: {
+      graphiql: true,
+      pretty: true
+    }
   }
 }
