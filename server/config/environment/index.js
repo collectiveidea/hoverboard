@@ -9,7 +9,7 @@ const config = {
   graphql: {
     graphiql: true,
     pretty: true
-  }
+  },
   secret: 'server_secret',
   roles: {
     anonymous: 'anonymous',
