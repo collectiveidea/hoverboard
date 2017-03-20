@@ -4,7 +4,9 @@
   "collectCoverage": false,
   "resetModules": true,
   "roots": [
-    "<rootDir>/server/tests"
+    "<rootDir>"
   ],
+  "moduleFileExtensions": ["js", "jsx"],
+  "moduleDirectories": ["server", "client", "hoverBoard", "node_modules"],
   "testEnvironment": "jest-environment-node-debug"
 }
