@@ -79,15 +79,16 @@ export default class App {
   listen() {
     const { relay, graphQL } = this
 
-    relay.server.listen(relay.port, () =>
-      console.log(chalk.green(`Relay is listening on port ${relay.port}`))
-    );
-
     // If the graphql server is on a separate port, make it listen on that port.
     if (graphQL.port && (graphQL.port != relay.port)) {
       graphQL.server.listen(graphQL.port, () =>
         console.log(chalk.green(`GraphQL is listening on port ${graphQL.port}`))
       );
     }
+
+    return relay.server.listen(relay.port, () =>
+      console.log(chalk.green(`Relay is listening on port ${relay.port}`))
+    );
+
   }
 }
