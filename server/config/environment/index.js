@@ -4,19 +4,20 @@ import express from 'express';
 import devServer from 'hoverBoard/devServer'
 
 const port = process.env.PORT || 3000
+const graphQLPort = process.env.PORT || 8000
 
 const config = {
   env: process.env.NODE_ENV || 'development',
   secret: process.env.SECRET || 'dev_secret',
   relay: {
-    server: devServer({ '/graphql': `http://localhost:${port}` }),
+    server: devServer({ '/graphql': `http://localhost:${graphQLPort}` }),
     port: port,
     endpoint: '/',
     middleware: []
   },
   graphQL: {
     server: express(),
-    port: 8000,
+    port: graphQLPort,
     endpoint: '/graphql',
     requestOptions: {
       graphiql: true,
