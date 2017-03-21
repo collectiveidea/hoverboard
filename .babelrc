@@ -18,8 +18,9 @@
           "root": ["./server", "./client", "./hoverBoard"],
           "alias": {
             "hoverBoard": "./hoverBoard",
-            "test": "./server/test",
             "server": "./server",
+            "client": "./client",
+            "test": "./server/test",
             "types": "./server/types",
             "models": "./server/models",
             "underscore": "lodash"

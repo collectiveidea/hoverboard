@@ -6,38 +6,28 @@ import App from 'hoverBoard/app'
 import request from 'supertest'
 
 describe('App', () => {
-  let relayServer
-  let graphQLServer
+  let server
 
   beforeEach(() => {
     const app = new App(config)
-    graphQLServer = app.graphQL.server
-    relayServer = app.relay.server.app
+    server = app.relay.server
   })
 
   describe('GraphQL Server', () => {
     it('responds to /', (done) => {
-      request(graphQLServer)
+      request(server)
+        .get('/')
+        .expect(200, done);
+    })
+
+    it('responds to /graphql', (done) => {
+      request(server)
         .get('/')
         .expect(200, done);
     })
 
     it('404 everything else', (done) => {
-      request(graphQLServer)
-        .get('/foo/bar')
-        .expect(404, done);
-    })
-  })
-
-  describe('Relay Server', () => {
-    it('responds to /', (done) => {
-      request(relayServer)
-        .get('/')
-        .expect(200, done);
-    })
-
-    it('404 everything else', (done) => {
-      request(relayServer)
+      request(server)
         .get('/foo/bar')
         .expect(404, done);
     })
