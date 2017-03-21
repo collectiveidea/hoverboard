@@ -7,6 +7,7 @@ import passport from 'passport'
 import { Strategy } from 'passport-local'
 import path from 'path'
 import chalk from 'chalk'
+import _ from 'lodash'
 
 import Logger from 'hoverBoard/logger'
 import schema from 'config/schema'

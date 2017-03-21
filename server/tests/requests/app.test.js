@@ -1,46 +1,29 @@
 /* global describe it expect beforeEach */
 
+import request from 'supertest'
+
 import schema from 'config/schema'
 import config from 'config/environment'
 import App from 'hoverBoard/app'
-import request from 'supertest'
+import Logger from 'hoverBoard/logger'
 
 describe('App', () => {
   let server
 
   beforeEach(() => {
     const app = new App(config)
-    server = app.listen()
-  })
-
-  afterEach((done) => {
-    server.close(done)
+    server = app.relay.server
   })
 
   describe('Routes', () => {
-    it('responds to /', (done) => {
-      request(server)
-        .get('/')
-        .expect(200, done)
-    })
-
     it('responds to /graphql', (done) => {
       request(server)
-        .get('/')
-        .expect(200, done)
-    })
-
-    it('responds to /login', (done) => {
-      request(server)
-        .post('/foo/bar/baz')
-        .expect(200, done)
-    })
-
-    it('404 everything else', (done) => {
-      request(server)
-        .get('/foo/bar')
-        .expect(200)
-        .expect(404, done)
+        .get('/graphql?query={}')
+        .end((err, res) => {
+          Logger.log('Request', res)
+          expect(res.statusCode).toBe(200)
+          done()
+        })
     })
   })
 })
