@@ -4,7 +4,7 @@ import express from 'express';
 import devServer from 'hoverBoard/devServer'
 
 const port = process.env.PORT || 3000
-const graphQLPort = process.env.PORT || 8000
+const graphQLPort = 8000
 
 const config = {
   env: process.env.NODE_ENV || 'development',
