@@ -1,5 +1,5 @@
 import express from 'express'
-import historyApiFallback from 'connect-history-api-fallback';
+import historyApiFallback from 'connect-history-api-fallback'
 
 const relayServer = express()
 const port = process.env.PORT || 3000

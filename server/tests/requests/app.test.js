@@ -17,11 +17,22 @@ describe('App', () => {
 
   describe('Routes', () => {
     it('responds to /graphql', (done) => {
+      const query = `
+        query {
+          viewer {
+            id
+            name
+          }
+        }
+      `
+
       request(server)
-        .get('/graphql?query={}')
+        .get('/graphql')
+        .query({ query: query })
         .end((err, res) => {
-          Logger.log('Request', res)
+          Logger.log('Request', res.text)
           expect(res.statusCode).toBe(200)
+          expect(JSON.parse(res.text).data.viewer).toBe(null)
           done()
         })
     })
