@@ -16,14 +16,13 @@ describe('App', () => {
   })
 
   describe('GraphQL Server', () => {
-
-    it('responds to /', function testSlash(done) {
+    it('responds to /', (done) => {
       request(graphQLServer)
         .get('/')
         .expect(200, done);
     })
 
-    it('404 everything else', function testPath(done) {
+    it('404 everything else', (done) => {
       request(graphQLServer)
         .get('/foo/bar')
         .expect(404, done);
@@ -31,13 +30,13 @@ describe('App', () => {
   })
 
   describe('Relay Server', () => {
-    it('responds to /', function testSlash(done) {
+    it('responds to /', (done) => {
       request(relayServer)
         .get('/')
         .expect(200, done);
     })
 
-    it('404 everything else', function testPath(done) {
+    it('404 everything else', (done) => {
       request(relayServer)
         .get('/foo/bar')
         .expect(404, done);
