@@ -29,9 +29,9 @@ describe('App', () => {
       request(server)
         .get('/graphql')
         .query({ query: query })
+        .expect(200)
         .end((err, res) => {
-          Logger.log('Request', res.text)
-          expect(res.statusCode).toBe(200)
+          expect(res.statusCode).toBe(500)
           expect(JSON.parse(res.text).data.viewer).toBe(null)
           done()
         })
