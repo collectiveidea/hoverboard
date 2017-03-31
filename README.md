@@ -29,7 +29,7 @@ page, and adds the following:
 - Authentication via `passportjs` (database-only, for now).
 - Postgresql, possibly with stored procedures in `.sql`files.
 - Jest for testing, and full test coverage for what's included.
-- Breakpoint debugging with `devtool` that works inside Jest tests.
+- [Breakpoint debugging](https://medium.com/@paul_irish/debugging-node-js-nightlies-with-chrome-devtools-7c4a1b95ae27#.mryvehymk) with `devtool` that works inside Jest tests.
 - React Storybook stories for the default included components.
 - Travis CI integration
 
@@ -37,4 +37,3 @@ page, and adds the following:
 You'll need yarn installed, so if you're on OS X then `brew update && brew install yarn`.
 
 Clone the repo and rename it to whatever you want, then go into the directory and `yarn install`.
-
