@@ -50,17 +50,17 @@ describe('App', () => {
   describe('Authentication and logging in', () => {
     let user = db.getUser('1')
 
-    it('should login existing User', () => {
+    it.only('should login existing User', () => {
       let token = null
       return request(server)
         .post('/login')
         .send({
           email: user.email,
-          password: user.password
+          password: 'FOOBARBAZ'
         })
-        .expect(200)
-        .then((data) => {
-          expect(data.body.token).toBe('foobar')
+        .then((err, res) => {
+          Logger.log('Response:', err, res)
+          expect(res.body.token).toBe('foobar')
         })
     })
 

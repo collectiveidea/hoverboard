@@ -25,7 +25,7 @@ class Logger {
   }
 
   log(label, input, output) {
-    const fileName = `logs/${process.env.NODE_ENV}.log`
+    const fileName = `log/${process.env.NODE_ENV}.log`
     const line = `${this.logLine(label, input, output)}\n`
 
     fs.appendFileSync(fileName, line, (err) => {

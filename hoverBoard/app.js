@@ -20,30 +20,11 @@ export default class App {
     this.relay = relay
     this.graphQL = graphQL
 
-    this.passport()
     this.middleware()
+    this.passport()
     this.routing()
 
     this.listen = this.listen.bind(this)
-  }
-
-  passport() {
-    this.relay.server.use(flash())
-
-    passport.use(new Strategy(
-      { passReqToCallback : true },
-      (req, username, password, done) => {
-        done(null, db.getUser('1'))
-      }
-    ))
-
-    passport.serializeUser(function(user, done) {
-      done(null, user.id)
-    })
-
-    passport.deserializeUser(function(id, done) {
-      done(null, db.getUser(id))
-    })
   }
 
   middleware() {
@@ -61,6 +42,27 @@ export default class App {
       genid: (req) => uuid.v4(),
       secret: this.secret
     }))
+  }
+
+  passport() {
+    this.relay.server.use(flash())
+
+    passport.use(new Strategy({
+        passReqToCallback : true,
+        usernameField: 'email'
+      },
+      (req, username, password, done) => {
+        done(null, db.getUser('1'))
+      }
+    ))
+
+    passport.serializeUser((user, done) => {
+      done(null, user.id)
+    })
+
+    passport.deserializeUser((id, done) => {
+      done(null, db.getUser(id))
+    })
   }
 
   routing() {
