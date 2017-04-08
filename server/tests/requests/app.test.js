@@ -9,23 +9,19 @@ import Logger from 'hoverBoard/logger'
 import { db } from 'db/database'
 
 describe('App', () => {
-  let server
-
-  beforeEach(() => {
-    const app = new App(config)
-    server = app.relay.server
-  })
+  const app = new App(config)
+  const server = app.relay.server
+  const query = `
+    query {
+      viewer {
+        id
+        name
+      }
+    }
+  `
 
   describe('Routes', () => {
     it('responds to /graphql', (done) => {
-      const query = `
-        query {
-          viewer {
-            id
-            name
-          }
-        }
-      `
 
       request(server)
         .get('/graphql')
@@ -50,7 +46,7 @@ describe('App', () => {
   describe('Authentication and logging in', () => {
     let user = db.getUser('1')
 
-    it.only('should login existing User', () => {
+    it('should login existing User', () => {
       let token = null
       return request(server)
         .post('/login')

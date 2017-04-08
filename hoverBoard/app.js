@@ -30,15 +30,15 @@ export default class App {
   }
 
   middleware() {
-    const { server, middleware } = this.relay
+    const { relay, graphQL } = this
 
     // Load environment-specific middleware
-    middleware.forEach((el) => server.use(el))
+    relay.middleware.forEach((el) => { relay.server.use(el) })
 
     // Load shared middleware
-    server.use(bodyParser.json()) // for parsing application/json
-    server.use(bodyParser.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
-    server.use(session({
+    relay.server.use(bodyParser.json()) // for parsing application/json
+    relay.server.use(bodyParser.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
+    relay.server.use(session({
       resave: true,
       saveUninitialized: true,
       genid: (req) => uuid.v4(),
@@ -46,12 +46,19 @@ export default class App {
     }))
 
     const accessLogStream = fs.createWriteStream(`log/${process.env.NODE_ENV}.log`, {flags: 'a'})
-    server.use(morgan('combined', {stream: accessLogStream}))
+    relay.server.use(morgan('combined', {stream: accessLogStream}))
 
-    // This is for passport
-    server.use(flash())
-    server.use(passport.initialize());
-    server.use(passport.session());
+    // Prepare passport middelware
+    relay.server.use(flash())
+    relay.server.use(passport.initialize());
+    relay.server.use(passport.session());
+
+    // Set up graphql
+    graphQL.server.use(graphQL.endpoint, graphQLHTTP((req) => {
+      const context = { user: req.user, session: req.session }
+
+      return _.extend(graphQL.requestOptions, { schema, context})
+    }))
   }
 
   passport() {
@@ -76,17 +83,10 @@ export default class App {
   }
 
   routing() {
-    const { relay, graphQL } = this
-
-    // Set up graphql endpoint
-    graphQL.server.use(graphQL.endpoint, graphQLHTTP((req) => {
-      const context = { user: req.user, session: req.session }
-
-      return _.extend(graphQL.requestOptions, { schema, context})
-    }))
+    const { relay } = this
 
     // Set up the other endpoints
-    relay.server.use('/', express.static(path.join(__dirname, '../build')))
+    relay.server.get('/', express.static(path.join(__dirname, '../build')))
 
     relay.server.get('/login', (req, res) => {
       res.send('Login please')
@@ -96,7 +96,8 @@ export default class App {
       successRedirect: '/',
       failureRedirect: '/login',
       failureFlash: true
-    }))
+    })),
+    (req, res) => { res.send(req.user) }
   }
 
   listen() {
