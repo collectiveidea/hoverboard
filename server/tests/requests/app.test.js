@@ -60,10 +60,9 @@ describe('App', () => {
         })
         .then((err, res) => {
           Logger.log('Response:', err, res)
-          expect(res.body.token).toBe('foobar')
+          expect(res.token).toBe('foobar')
         })
     })
-
   })
 })
 

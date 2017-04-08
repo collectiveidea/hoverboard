@@ -42,11 +42,14 @@ export default class App {
       genid: (req) => uuid.v4(),
       secret: this.secret
     }))
+
+    // This is for passport
+    server.use(flash())
+    server.use(passport.initialize());
+    server.use(passport.session());
   }
 
   passport() {
-    this.relay.server.use(flash())
-
     passport.use(new Strategy({
         passReqToCallback : true,
         usernameField: 'email'
