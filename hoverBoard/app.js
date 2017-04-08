@@ -32,7 +32,9 @@ export default class App {
 
     passport.use(new Strategy(
       { passReqToCallback : true },
-      (req, username, password, done) => done(null, db.getUser('1'))
+      (req, username, password, done) => {
+        done(null, db.getUser('1'))
+      }
     ))
 
     passport.serializeUser(function(user, done) {
@@ -74,11 +76,15 @@ export default class App {
     // Set up the other endpoints
     relay.server.use('/', express.static(path.join(__dirname, '../build')))
 
-    relay.server.use('/login', passport.authenticate('local', {
+    relay.server.get('/login', (req, res) => {
+      res.send('Login please')
+    })
+
+    relay.server.post('/login', passport.authenticate('local', {
       successRedirect: '/',
       failureRedirect: '/login',
       failureFlash: true
-    }) )
+    }))
   }
 
   listen() {

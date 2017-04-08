@@ -6,6 +6,7 @@ import schema from 'config/schema'
 import config from 'config/environment'
 import App from 'hoverBoard/app'
 import Logger from 'hoverBoard/logger'
+import { db } from 'db/database'
 
 describe('App', () => {
   let server
@@ -40,10 +41,29 @@ describe('App', () => {
       request(server)
         .get('/login')
         .end((err, res) => {
-          expect(res.statusCode).toBe(302)
+          expect(res.statusCode).toBe(200)
           done()
         })
     })
+  })
+
+  describe('Authentication and logging in', () => {
+    let user = db.getUser('1')
+
+    it('should login existing User', () => {
+      let token = null
+      return request(server)
+        .post('/login')
+        .send({
+          email: user.email,
+          password: user.password
+        })
+        .expect(200)
+        .then((data) => {
+          expect(data.body.token).toBe('foobar')
+        })
+    })
+
   })
 })
 
