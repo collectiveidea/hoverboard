@@ -1,4 +1,5 @@
 import express from 'express'
+import flash from 'connect-flash'
 import session from 'express-session'
 import graphQLHTTP from 'express-graphql'
 import bodyParser from 'body-parser'
@@ -27,8 +28,11 @@ export default class App {
   }
 
   passport() {
+    this.relay.server.use(flash())
+
     passport.use(new Strategy(
-      (username, password, done) => done(null, db.getUser('1'))
+      { passReqToCallback : true },
+      (req, username, password, done) => done(null, db.getUser('1'))
     ))
 
     passport.serializeUser(function(user, done) {

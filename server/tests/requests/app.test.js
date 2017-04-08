@@ -35,6 +35,15 @@ describe('App', () => {
           done()
         })
     })
+
+    it('responds to /login', (done) => {
+      request(server)
+        .get('/login')
+        .end((err, res) => {
+          expect(res.statusCode).toBe(302)
+          done()
+        })
+    })
   })
 })
 
