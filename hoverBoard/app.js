@@ -31,9 +31,10 @@ export default class App {
 
   middleware() {
     const { relay, graphQL } = this
+    const accessLogStream = fs.createWriteStream(`log/${process.env.NODE_ENV}.log`, {flags: 'a'})
 
-    // Load environment-specific middleware
-    relay.middleware.forEach((el) => { relay.server.use(el) })
+    // Logging
+    relay.server.use(morgan('combined', {stream: accessLogStream}))
 
     // Load shared middleware
     relay.server.use(bodyParser.json()) // for parsing application/json
@@ -44,9 +45,6 @@ export default class App {
       genid: (req) => uuid.v4(),
       secret: this.secret
     }))
-
-    const accessLogStream = fs.createWriteStream(`log/${process.env.NODE_ENV}.log`, {flags: 'a'})
-    relay.server.use(morgan('combined', {stream: accessLogStream}))
 
     // Prepare passport middelware
     relay.server.use(flash())
@@ -59,6 +57,9 @@ export default class App {
 
       return _.extend(graphQL.requestOptions, { schema, context})
     }))
+
+    // Load environment-specific middleware
+    relay.middleware.forEach((el) => { relay.server.use(el) })
   }
 
   passport() {

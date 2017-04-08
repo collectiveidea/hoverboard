@@ -44,7 +44,7 @@ describe('App', () => {
   })
 
   describe('Authentication and logging in', () => {
-    let user = db.getUser('1')
+    const user = db.getUser('1')
 
     it('should login existing User', () => {
       let token = null
