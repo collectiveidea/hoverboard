@@ -9,25 +9,23 @@ import Logger from 'hoverBoard/logger'
 import { db } from 'db/database'
 
 describe('App', () => {
+  const query = `
+    query {
+      viewer {
+        id
+        name
+      }
+    }
+  `
   let server
 
-  beforeEach(() => {
-    const app = new App(config)
-    server = app.relay.server
-  })
+  describe('Unauthenticated Routes', () => {
+    beforeEach(() => {
+      server = request(new App(config).relay.server)
+    })
 
-  describe('Routes', () => {
     it('responds to /graphql', (done) => {
-      const query = `
-        query {
-          viewer {
-            id
-            name
-          }
-        }
-      `
-
-      request(server)
+      server
         .get('/graphql')
         .query({ query: query })
         .end((err, res) => {
@@ -38,7 +36,7 @@ describe('App', () => {
     })
 
     it('responds to /login', (done) => {
-      request(server)
+      server
         .get('/login')
         .end((err, res) => {
           expect(res.statusCode).toBe(200)
@@ -50,17 +48,46 @@ describe('App', () => {
   describe('Authentication and logging in', () => {
     let user = db.getUser('1')
 
-    it.only('should login existing User', () => {
-      let token = null
-      return request(server)
+    beforeEach(() => {
+      server = request(new App(config).relay.server)
+    })
+
+    it('should login existing User', () => {
+      return server
         .post('/login')
         .send({
           email: user.email,
-          password: 'FOOBARBAZ'
+          password: user.password
         })
         .then((res) => {
+          Logger.log('Response:', res)
           expect(res.statusCode).toBe(302)
           expect(res.text).toBe('Found. Redirecting to /')
+        })
+    })
+  })
+
+  describe('Autenticated Routes', () => {
+    let user = db.getUser('1')
+
+    beforeEach(() => {
+      server = request(new App(config).relay.server)
+      server
+        .post('/login')
+        .send({
+          email: user.email,
+          password: user.password
+        })
+    })
+
+    it('responds to /graphql', (done) => {
+      server
+        .get('/graphql')
+        .query({ query: query })
+        .end((err, res) => {
+          expect(res.statusCode).toBe(200)
+          expect(JSON.parse(res.text).data.viewer).not.toBe(null)
+          done()
         })
     })
   })

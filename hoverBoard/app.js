@@ -50,8 +50,8 @@ export default class App {
 
     // This is for passport
     server.use(flash())
-    server.use(passport.initialize());
-    server.use(passport.session());
+    server.use(passport.initialize())
+    server.use(passport.session())
   }
 
   passport() {
@@ -65,25 +65,16 @@ export default class App {
     ))
 
     passport.serializeUser((user, done) => {
-      Logger.log('SerializeUser', user)
       done(null, user.id)
     })
 
     passport.deserializeUser((id, done) => {
-      Logger.log('DeserializeUser', id)
       done(null, db.getUser(id))
     })
   }
 
   routing() {
     const { relay, graphQL } = this
-
-    // Set up graphql endpoint
-    graphQL.server.use(graphQL.endpoint, graphQLHTTP((req) => {
-      const context = { user: req.user, session: req.session }
-
-      return _.extend(graphQL.requestOptions, { schema, context})
-    }))
 
     // Set up the other endpoints
     relay.server.use('/', express.static(path.join(__dirname, '../build')))
@@ -97,6 +88,13 @@ export default class App {
       failureRedirect: '/login',
       failureFlash: true
     }))
+
+    // Set up graphql endpoint
+    graphQL.server.use(graphQL.endpoint, graphQLHTTP((req) => {
+      const context = { user: req.user, session: req.session }
+      Logger.log(graphQL.endpoint, { user: req.user, session: req.session })
+      return _.extend(graphQL.requestOptions, { schema, context})
+    }))
   }
 
   listen() {
@@ -106,12 +104,11 @@ export default class App {
     if (graphQL.port && (graphQL.port != relay.port)) {
       graphQL.server.listen(graphQL.port, () =>
         console.log(chalk.green(`GraphQL is listening on port ${graphQL.port}`))
-      );
+      )
     }
 
-    return relay.server.listen(relay.port, () =>
+    return relay.server.listen(relay.port, () => {
       console.log(chalk.green(`Relay is listening on port ${relay.port}`))
-    );
-
+    })
   }
 }
