@@ -58,9 +58,9 @@ describe('App', () => {
           email: user.email,
           password: 'FOOBARBAZ'
         })
-        .then((err, res) => {
-          Logger.log('Response:', err, res)
-          expect(res.token).toBe('foobar')
+        .then((res) => {
+          expect(res.statusCode).toBe(302)
+          expect(res.text).toBe('Found. Redirecting to /')
         })
     })
   })

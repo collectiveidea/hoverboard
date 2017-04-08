@@ -65,10 +65,12 @@ export default class App {
     ))
 
     passport.serializeUser((user, done) => {
+      Logger.log('SerializeUser', user)
       done(null, user.id)
     })
 
     passport.deserializeUser((id, done) => {
+      Logger.log('DeserializeUser', id)
       done(null, db.getUser(id))
     })
   }
