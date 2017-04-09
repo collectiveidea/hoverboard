@@ -9,8 +9,8 @@ import Logger from 'hoverBoard/logger'
 import { db } from 'db/database'
 
 describe('App', () => {
-  const app = new App(config)
-  const server = app.relay.server
+  const server = (new App(config)).relay.server
+  const user = db.getUser('1')
   const query = `
     query {
       viewer {
@@ -44,8 +44,6 @@ describe('App', () => {
   })
 
   describe('Authentication and logging in', () => {
-    const user = db.getUser('1')
-
     it('should login existing User', (done) => {
       request(server)
         .post('/login')
@@ -59,7 +57,6 @@ describe('App', () => {
   })
 
   describe('Authenticated access', () => {
-    const user = db.getUser('1')
     const agent = request.agent(server)
 
     it('should login existing User', (done) => {
