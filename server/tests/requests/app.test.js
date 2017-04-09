@@ -49,13 +49,33 @@ describe('App', () => {
     it('should login existing User', (done) => {
       request(server)
         .post('/login')
-        .send({
-          email: user.email,
-          password: 'FOOBARBAZ'
-        })
+        .send(user)
         .end((err, res) => {
           expect(res.statusCode).toBe(302)
           expect(res.text).toBe('Found. Redirecting to /')
+          done()
+        })
+    })
+  })
+
+  describe('Authenticated access', () => {
+    const user = db.getUser('1')
+    const agent = request.agent(server)
+
+    it('should login existing User', (done) => {
+      agent
+        .post('/login')
+        .send(user)
+        .end((err, res) => {
+          done()
+        })
+
+      agent
+        .get('/graphql')
+        .query({ query: query })
+        .end((err, res) => {
+          expect(res.statusCode).toBe(200)
+          expect(JSON.parse(res.text).data.viewer).toBe(null)
           done()
         })
     })
