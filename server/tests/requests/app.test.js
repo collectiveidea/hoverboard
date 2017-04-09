@@ -22,7 +22,6 @@ describe('App', () => {
 
   describe('Routes', () => {
     it('responds to /graphql', (done) => {
-
       request(server)
         .get('/graphql')
         .query({ query: query })
