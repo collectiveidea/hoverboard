@@ -65,21 +65,24 @@ export default class App {
   passport() {
     passport.use(new Strategy({
         passReqToCallback : true,
-        usernameField: 'email'
+        usernameField: 'email',
+        passwordField: 'password'
       },
       (req, username, password, done) => {
-        done(null, db.getUser('1'))
+        const user = db.getUser('1')
+        Logger.log('Local strategy returning user', user)
+        return done(null, user)
       }
     ))
 
     passport.serializeUser((user, done) => {
       Logger.log('SerializeUser', user)
-      done(null, user.id)
+      return done(null, user.id)
     })
 
     passport.deserializeUser((id, done) => {
       Logger.log('DeserializeUser', id)
-      done(null, db.getUser(id))
+      return done(null, db.getUser(id))
     })
   }
 
