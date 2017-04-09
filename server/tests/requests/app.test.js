@@ -46,17 +46,17 @@ describe('App', () => {
   describe('Authentication and logging in', () => {
     const user = db.getUser('1')
 
-    it('should login existing User', () => {
-      let token = null
-      return request(server)
+    it('should login existing User', (done) => {
+      request(server)
         .post('/login')
         .send({
           email: user.email,
           password: 'FOOBARBAZ'
         })
-        .then((res) => {
+        .end((err, res) => {
           expect(res.statusCode).toBe(302)
           expect(res.text).toBe('Found. Redirecting to /')
+          done()
         })
     })
   })
