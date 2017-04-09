@@ -62,7 +62,7 @@ describe('App', () => {
       agent
         .post('/login')
         .send(user)
-        .end((err, res) => {})
+        .end((err, res) => { Logger.log('Login response', res) })
 
       agent
         .get('/graphql')
