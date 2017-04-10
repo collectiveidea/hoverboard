@@ -102,7 +102,7 @@ describe('App', () => {
   })
 
   describe('Authentication and logging in', () => {
-    it.only('should login existing User', (done) => {
+    it('should login existing User', (done) => {
       request(server)
         .post('/login')
         .send(user)
