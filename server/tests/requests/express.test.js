@@ -52,12 +52,6 @@ app.use('/graphql', graphQLHTTP((req) => {
   return { schema, context }
 }))
 
-passport.use(new Strategy(
-  function(username, password, done) {
-    return done(null, { username, password, id: '1' });
-  }
-));
-
 passport.serializeUser((user, done) => {
   Logger.log('SerializeUser', user)
   return done(null, user.id)
@@ -77,9 +71,16 @@ app.post('/login',
                                    failureRedirect: '/login'})
 );
 
+passport.use(new Strategy(
+  function(username, password, done) {
+    return done(null, { username, password, id: '1' });
+  }
+));
+
+
 describe('App', () => {
   const server = app
-  const user = db.getUser('1')
+  const user = { username: 'jon', password: 'foobarbaz', id: '1' }
   const query = `
     query {
       viewer {
@@ -101,11 +102,12 @@ describe('App', () => {
   })
 
   describe('Authentication and logging in', () => {
-    it('should login existing User', (done) => {
+    it.only('should login existing User', (done) => {
       request(server)
         .post('/login')
         .send(user)
         .end((err, res) => {
+          Logger.log('Res', res)
           expect(res.statusCode).toBe(302)
           expect(res.text).toBe('Found. Redirecting to /')
           done()
