@@ -49,6 +49,8 @@ app.use(passport.session());
 app.use('/graphql', graphQLHTTP((req) => {
   const context = { user: req.user, session: req.session }
 
+  Logger.log('GraphQL Call', context)
+
   return { schema, context }
 }))
 
