@@ -31,16 +31,17 @@ class App {
   }
 }
 
+const user = { username: 'jon', password: 'foobarbaz', id: '1' }
 const app = express()
 
-app.use(express.static('build'));
+app.use(express.static('build'))
 app.use(bodyParser.json()) // for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
 app.use(session({
   secret: 'foobarbaz'
 }))
-app.use(passport.initialize());
-app.use(passport.session());
+app.use(passport.initialize())
+app.use(passport.session())
 
 // Set up graphql
 app.use((req, res, next) => {
@@ -71,18 +72,15 @@ app.get('/login', (req, res) => {
 app.post('/login',
   passport.authenticate('local', { successRedirect: '/',
                                    failureRedirect: '/login'})
-);
+)
 
 passport.use(new Strategy(
   function(username, password, done) {
-    return done(null, { username, password, id: '1' });
+    return done(null, user)
   }
-));
-
+))
 
 describe('App', () => {
-  const user = { username: 'jon', password: 'foobarbaz', id: '1' }
-
   describe('Authenticated access', () => {
     const agent = request.agent(app)
 
