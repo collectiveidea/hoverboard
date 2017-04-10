@@ -118,7 +118,7 @@ describe('App', () => {
   describe('Authenticated access', () => {
     const agent = request.agent(server)
 
-    it('should login existing User', (done) => {
+    it.only('should login existing User', (done) => {
       agent
         .post('/login')
         .send(user)
