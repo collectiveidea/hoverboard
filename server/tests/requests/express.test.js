@@ -37,22 +37,18 @@ app.use(express.static('build'));
 app.use(bodyParser.json()) // for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
 app.use(session({
-  resave: true,
-  saveUninitialized: true,
-  genid: (req) => uuid.v4(),
   secret: 'foobarbaz'
 }))
 app.use(passport.initialize());
 app.use(passport.session());
 
 // Set up graphql
-app.use('/graphql', graphQLHTTP((req) => {
+app.use((req, res, next) => {
   const context = { user: req.user, session: req.session }
 
-  Logger.log('GraphQL Call', context)
-
-  return { schema, context }
-}))
+  Logger.log('Context logging', context)
+  next()
+})
 
 passport.serializeUser((user, done) => {
   Logger.log('SerializeUser', user)
@@ -62,6 +58,10 @@ passport.serializeUser((user, done) => {
 passport.deserializeUser((id, done) => {
   Logger.log('DeserializeUser', id)
   return done(null, db.getUser(id))
+})
+
+app.get('/', function (req, res) {
+  res.send({ user: req.user, session: req.session })
 })
 
 app.get('/login', (req, res) => {
@@ -82,14 +82,26 @@ passport.use(new Strategy(
 
 describe('App', () => {
   const user = { username: 'jon', password: 'foobarbaz', id: '1' }
-  const query = `
-    query {
-      viewer {
-        id
-        name
-      }
-    }
-  `
+
+  describe('Authenticated access', () => {
+    const agent = request.agent(app)
+
+    it ('should persist a user in the session', (done) => {
+      agent
+        .post('/login')
+        .send(user)
+        .end((err, res) => { Logger.log('Login response', res) })
+
+      agent
+        .get('/')
+        .end((err, res) => {
+          expect(res.statusCode).toBe(200)
+          expect(JSON.parse(res.text).session).not.toBe(null)
+          expect(JSON.parse(res.text).user).toBe(undefined)
+          done()
+        })
+    })
+  })
 
   describe('Routes', () => {
     it('responds to /login', (done) => {
@@ -108,29 +120,8 @@ describe('App', () => {
         .post('/login')
         .send(user)
         .end((err, res) => {
-          Logger.log('Res', res)
           expect(res.statusCode).toBe(302)
           expect(res.text).toBe('Found. Redirecting to /')
-          done()
-        })
-    })
-  })
-
-  describe('Authenticated access', () => {
-    const agent = request.agent(app)
-
-    it('should login existing User', (done) => {
-      agent
-        .post('/login')
-        .send(user)
-        .end((err, res) => { Logger.log('Login response', res) })
-
-      agent
-        .get('/graphql')
-        .query({ query: query })
-        .end((err, res) => {
-          expect(res.statusCode).toBe(200)
-          expect(JSON.parse(res.text).data.viewer).toBe(null)
           done()
         })
     })
