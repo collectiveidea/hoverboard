@@ -43,7 +43,6 @@ app.use(session({
 app.use(passport.initialize())
 app.use(passport.session())
 
-// Set up graphql
 app.use((req, res, next) => {
   const context = { user: req.user, session: req.session }
 
@@ -63,12 +62,10 @@ passport.use(new Strategy(
 ))
 
 passport.serializeUser((user, done) => {
-  Logger.log('SerializeUser', user)
   return done(null, user.id)
 })
 
 passport.deserializeUser((id, done) => {
-  Logger.log('DeserializeUser', id)
   return done(null, db.getUser(id))
 })
 
