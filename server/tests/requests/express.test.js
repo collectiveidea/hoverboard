@@ -43,13 +43,6 @@ app.use(session({
 app.use(passport.initialize())
 app.use(passport.session())
 
-app.use((req, res, next) => {
-  const context = { user: req.user, session: req.session }
-
-  Logger.log('Context logging', context)
-  next()
-})
-
 app.use('/login',
   passport.authenticate('local', { successRedirect: '/',
                                    failureRedirect: '/login'})
