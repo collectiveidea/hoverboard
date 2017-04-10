@@ -51,6 +51,17 @@ app.use((req, res, next) => {
   next()
 })
 
+app.use('/login',
+  passport.authenticate('local', { successRedirect: '/',
+                                   failureRedirect: '/login'})
+)
+
+passport.use(new Strategy(
+  function(username, password, done) {
+    return done(null, user)
+  }
+))
+
 passport.serializeUser((user, done) => {
   Logger.log('SerializeUser', user)
   return done(null, user.id)
@@ -64,21 +75,6 @@ passport.deserializeUser((id, done) => {
 app.get('/', function (req, res) {
   res.send({ user: req.user, session: req.session })
 })
-
-app.get('/login', (req, res) => {
-  res.send('Login please')
-})
-
-app.post('/login',
-  passport.authenticate('local', { successRedirect: '/',
-                                   failureRedirect: '/login'})
-)
-
-passport.use(new Strategy(
-  function(username, password, done) {
-    return done(null, user)
-  }
-))
 
 describe('App', () => {
   describe('Authenticated access', () => {
@@ -96,17 +92,6 @@ describe('App', () => {
           expect(res.statusCode).toBe(200)
           expect(JSON.parse(res.text).session).not.toBe(null)
           expect(JSON.parse(res.text).user).toBe(undefined)
-          done()
-        })
-    })
-  })
-
-  describe('Routes', () => {
-    it('responds to /login', (done) => {
-      request(app)
-        .get('/login')
-        .end((err, res) => {
-          expect(res.statusCode).toBe(200)
           done()
         })
     })
