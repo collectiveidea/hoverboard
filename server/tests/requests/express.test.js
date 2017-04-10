@@ -81,7 +81,6 @@ passport.use(new Strategy(
 
 
 describe('App', () => {
-  const server = app
   const user = { username: 'jon', password: 'foobarbaz', id: '1' }
   const query = `
     query {
@@ -94,7 +93,7 @@ describe('App', () => {
 
   describe('Routes', () => {
     it('responds to /login', (done) => {
-      request(server)
+      request(app)
         .get('/login')
         .end((err, res) => {
           expect(res.statusCode).toBe(200)
@@ -105,7 +104,7 @@ describe('App', () => {
 
   describe('Authentication and logging in', () => {
     it('should login existing User', (done) => {
-      request(server)
+      request(app)
         .post('/login')
         .send(user)
         .end((err, res) => {
@@ -118,9 +117,9 @@ describe('App', () => {
   })
 
   describe('Authenticated access', () => {
-    const agent = request.agent(server)
+    const agent = request.agent(app)
 
-    it.only('should login existing User', (done) => {
+    it('should login existing User', (done) => {
       agent
         .post('/login')
         .send(user)
