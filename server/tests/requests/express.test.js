@@ -15,6 +15,7 @@ import fs from 'fs'
 import Logger from 'hoverBoard/logger'
 import schema from 'config/schema'
 import { db } from 'db/database'
+import request from 'supertest'
 
 class App {
   constructor({ secret, relay, graphQL }) {
@@ -32,24 +33,26 @@ class App {
 
 const app = express()
 
-app.configure(function() {
-  app.use(express.static('build'));
-  app.use(express.bodyParser());
-  app.use(express.session({ secret: 'keyboard cat' }));
-  app.use(passport.initialize());
-  app.use(passport.session());
-  app.use(app.router);
+app.use(express.static('build'));
+app.use(bodyParser.json()) // for parsing application/json
+app.use(bodyParser.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
+app.use(session({
+  resave: true,
+  saveUninitialized: true,
+  genid: (req) => uuid.v4(),
+  secret: 'foobarbaz'
+}))
+app.use(passport.initialize());
+app.use(passport.session());
 
-  // Set up graphql
-  app.use('/graphql', graphQLHTTP((req) => {
-    const context = { user: req.user, session: req.session }
+// Set up graphql
+app.use('/graphql', graphQLHTTP((req) => {
+  const context = { user: req.user, session: req.session }
 
-    return { schema, context }
-  }))
+  return { schema, context }
+}))
 
-});
-
-passport.use(new LocalStrategy(
+passport.use(new Strategy(
   function(username, password, done) {
     return done(null, { username, password, id: '1' });
   }
@@ -63,6 +66,10 @@ passport.serializeUser((user, done) => {
 passport.deserializeUser((id, done) => {
   Logger.log('DeserializeUser', id)
   return done(null, db.getUser(id))
+})
+
+app.get('/login', (req, res) => {
+  res.send('Login please')
 })
 
 app.post('/login',
@@ -109,7 +116,7 @@ describe('App', () => {
   describe('Authenticated access', () => {
     const agent = request.agent(server)
 
-    it.only('should login existing User', (done) => {
+    it('should login existing User', (done) => {
       agent
         .post('/login')
         .send(user)
