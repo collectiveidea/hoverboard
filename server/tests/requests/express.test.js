@@ -69,7 +69,7 @@ describe('App', () => {
         .end((err, res) => {
           expect(res.statusCode).toBe(200)
           expect(JSON.parse(res.text).session).not.toBe(null)
-          expect(JSON.parse(res.text).user).toBe(undefined)
+          expect(JSON.parse(res.text).user).not.toBe(undefined)
           done()
         })
     })
