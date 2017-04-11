@@ -56,7 +56,7 @@ describe('App', () => {
         })
     })
 
-    it('should login existing User', (done) => {
+    it('should persist a user session', (done) => {
       agent
         .get('/graphql')
         .query({ query: query })
