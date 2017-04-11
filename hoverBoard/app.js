@@ -45,11 +45,15 @@ export default class App {
       genid: (req) => uuid.v4(),
       secret: this.secret
     }))
+    relay.server.use('/', express.static(path.join(__dirname, '../build')))
 
     // Prepare passport middelware
     relay.server.use(flash())
     relay.server.use(passport.initialize());
     relay.server.use(passport.session());
+
+    // Load environment-specific middleware
+    relay.middleware.forEach((el) => { relay.server.use(el) })
 
     // Set up graphql
     graphQL.server.use(graphQL.endpoint, graphQLHTTP((req) => {
@@ -57,12 +61,11 @@ export default class App {
 
       return _.extend(graphQL.requestOptions, { schema, context})
     }))
-
-    // Load environment-specific middleware
-    relay.middleware.forEach((el) => { relay.server.use(el) })
   }
 
   passport() {
+    const { relay } = this
+
     passport.use(new Strategy({
         passReqToCallback : true,
         usernameField: 'email',
@@ -76,28 +79,22 @@ export default class App {
     ))
 
     passport.serializeUser((user, done) => {
-      Logger.log('SerializeUser', user)
       return done(null, user.id)
     })
 
     passport.deserializeUser((id, done) => {
-      Logger.log('DeserializeUser', id)
       return done(null, db.getUser(id))
     })
-  }
-
-  routing() {
-    const { relay } = this
-
-    // Set up the other endpoints
-    relay.server.get('/', express.static(path.join(__dirname, '../build')))
 
     relay.server.use('/login', passport.authenticate('local', {
       successRedirect: '/',
       failureRedirect: '/login',
       failureFlash: true
-    })),
-    (req, res) => { res.send(req.user) }
+    }))
+  }
+
+  routing() {
+    // Add any declared routes here
   }
 
   listen() {
