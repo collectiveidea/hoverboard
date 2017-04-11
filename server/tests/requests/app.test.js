@@ -42,9 +42,11 @@ describe('App', () => {
     })
   })
 
-  describe('Authentication and logging in', () => {
-    it('should login existing User', (done) => {
-      request(server)
+  describe('Authenticated access', () => {
+    const agent = request.agent(server)
+
+    it('should log in a user', (done) => {
+      agent
         .post('/login')
         .send(user)
         .end((err, res) => {
@@ -53,23 +55,17 @@ describe('App', () => {
           done()
         })
     })
-  })
 
-  describe('Authenticated access', () => {
-    const agent = request.agent(server)
-
-    it.only('should login existing User', (done) => {
-      agent
-        .post('/login')
-        .send(user)
-        .end((err, res) => { Logger.log('Login response', res) })
-
+    it('should login existing User', (done) => {
       agent
         .get('/graphql')
         .query({ query: query })
         .end((err, res) => {
+          const viewer = JSON.parse(res.text).data.viewer
+
           expect(res.statusCode).toBe(200)
-          expect(JSON.parse(res.text).data.viewer).toBe(null)
+          expect(viewer.id).not.toBe(null)
+          expect(viewer.name).toBe(user.name)
           done()
         })
     })
