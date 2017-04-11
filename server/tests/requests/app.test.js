@@ -36,7 +36,7 @@ describe('App', () => {
       request(server)
         .get('/login')
         .end((err, res) => {
-          expect(res.statusCode).toBe(200)
+          expect(res.statusCode).toBe(302)
           done()
         })
     })

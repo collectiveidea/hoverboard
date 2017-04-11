@@ -92,11 +92,7 @@ export default class App {
     // Set up the other endpoints
     relay.server.get('/', express.static(path.join(__dirname, '../build')))
 
-    relay.server.get('/login', (req, res) => {
-      res.send('Login please')
-    })
-
-    relay.server.post('/login', passport.authenticate('local', {
+    relay.server.use('/login', passport.authenticate('local', {
       successRedirect: '/',
       failureRedirect: '/login',
       failureFlash: true
