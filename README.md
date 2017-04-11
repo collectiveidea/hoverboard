@@ -37,3 +37,21 @@ page, and adds the following:
 You'll need yarn installed, so if you're on OS X then `brew update && brew install yarn`.
 
 Clone the repo and rename it to whatever you want, then go into the directory and `yarn install`.
+
+# To do
+## Project
+- [ ] Get js lint passing
+- [ ] Travis integration
+
+## Server
+- [ ] Get a better environment-specific stub database working
+- [ ] Mutations: CreatePost, UpdatePost, DeletePost
+- [ ] Logout
+- [ ] Start on postgresql for db with `sequelize`
+
+## Client
+- [ ] Post listing for user
+- [ ] Log in screen
+- [ ] Log out link
+- [ ] Forms for Post CRUD
+- [ ] Storybook tests
