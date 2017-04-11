@@ -48,7 +48,7 @@ describe('App', () => {
     const agent = request.agent(app)
 
     it('should log in a user', (done) => {
-      request(app)
+      agent
         .post('/login')
         .send(user)
         .end((err, res) => {
