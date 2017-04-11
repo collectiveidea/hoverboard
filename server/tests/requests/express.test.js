@@ -60,11 +60,6 @@ describe('App', () => {
 
     it ('should persist a logged in user in the session', (done) => {
       agent
-        .post('/login')
-        .send(user)
-        .end((err, res) => { console.log(JSON.stringify(res)) })
-
-      agent
         .get('/')
         .end((err, res) => {
           expect(res.statusCode).toBe(200)
