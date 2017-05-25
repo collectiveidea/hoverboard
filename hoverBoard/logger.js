@@ -1,5 +1,5 @@
-import chalk from 'chalk'
-import fs from 'fs'
+const chalk = require('chalk')
+const fs = require('fs')
 
 class Logger {
   logLine(label, input, output) {
@@ -39,4 +39,4 @@ class Logger {
   }
 }
 
-export default new Logger
+module.exports = new Logger

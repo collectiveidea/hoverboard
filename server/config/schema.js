@@ -1,6 +1,8 @@
-import { GraphQLSchema } from 'graphql'
-import queryType from 'types/queries/queryType'
+/* eslint-disable global-require */
 
-export default new GraphQLSchema({
+const GraphQLSchema = require('graphql').GraphQLSchema
+const queryType = require.main.require('../server/types/queries/queryType')
+
+module.exports = new GraphQLSchema({
   query: queryType
 })

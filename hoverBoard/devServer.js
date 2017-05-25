@@ -1,6 +1,6 @@
-import webpack from 'webpack'
-import WebpackDevServer from 'webpack-dev-server'
-import webpackConfig from './../webpack.config'
+const webpack = require('webpack')
+const WebpackDevServer = require('webpack-dev-server')
+const webpackConfig = require.main.require('../webpack.config')
 
 const devServer = (proxy) => new WebpackDevServer(webpack(webpackConfig), {
   contentBase: '/build/',
@@ -12,4 +12,4 @@ const devServer = (proxy) => new WebpackDevServer(webpack(webpackConfig), {
   historyApiFallback: true
 })
 
-export default devServer
+module.exports = devServer

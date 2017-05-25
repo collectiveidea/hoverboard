@@ -1,7 +1,7 @@
 /* eslint-disable global-require */
-import _ from 'lodash'
-import express from 'express';
-import devServer from 'hoverBoard/devServer'
+const _ = require('lodash')
+const express = require('express');
+const devServer = require.main.require('../hoverBoard/devServer')
 
 const port = process.env.PORT || 3000
 const graphQLPort = 8000
@@ -26,5 +26,5 @@ const config = {
   }
 }
 
-export default _.extend(config, require(`./${config.env}`).default) // eslint-disable-line
+module.exports = _.extend(config, require(`./${config.env}`).default) // eslint-disable-line
 

@@ -1,10 +1,10 @@
-import express from 'express'
-import historyApiFallback from 'connect-history-api-fallback'
+const express = require('express')
+const historyApiFallback = require('connect-history-api-fallback')
 
 const relayServer = express()
 const port = process.env.PORT || 3000
 
-export default {
+module.exports = {
   relay: {
     server: relayServer,
     port: port,

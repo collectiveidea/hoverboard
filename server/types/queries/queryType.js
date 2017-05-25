@@ -1,7 +1,8 @@
 /* eslint-disable no-unused-vars, no-use-before-define */
-import { GraphQLObjectType } from 'graphql'
-import { userType, nodeField } from 'types/index'
-import Logger from 'hoverBoard/logger'
+const GraphQLObjectType = require('graphql').GraphQLObjectType
+const Logger = require.main.require('../hoverBoard/logger.js')
+const userType = require.main.require('../server/types/index').userType
+const nodeField = require.main.require('../server/types/index').nodeField
 
 /**
  * This is the type that will be the root of our query,
@@ -21,4 +22,4 @@ const queryType = new GraphQLObjectType({
   })
 })
 
-export default queryType
+module.exports = queryType
